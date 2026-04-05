@@ -59,12 +59,14 @@ def broadcast_new_waste_log(waste_type, quantity, points, user_id=None):
 
     # Get user name
     user_name = "Unknown User"
+    user_org_id = None
     try:
         database = get_database()
         if user_id:
-            user = database.users.find_one({"_id": ObjectId(user_id)}, {"name": 1})
+            user = database.users.find_one({"_id": ObjectId(user_id)}, {"name": 1, "org_id": 1})
             if user:
                 user_name = user.get("name", "Unknown User")
+                user_org_id = user.get("org_id")
     except Exception:
         pass
 
@@ -84,6 +86,20 @@ def broadcast_new_waste_log(waste_type, quantity, points, user_id=None):
     # Broadcast updated impact stats
     impact_data = _get_impact_data()
     socketio.emit("impact_update", impact_data, room="impact")
+
+    # Broadcast org-specific event if user belongs to an organization
+    if user_org_id:
+        org_data = _get_org_impact_data(user_org_id)
+        socketio.emit(
+            "new_org_log",
+            {
+                "total_org_points": org_data.get("total_org_points", 0),
+                "total_org_kg_recycled": org_data.get("total_org_kg_recycled", 0),
+                "user_name": user_name,
+                "department": "Engineering",  # Could be extended with user department
+            },
+            room="impact",
+        )
 
 
 def broadcast_leaderboard_update():
@@ -170,6 +186,40 @@ def _get_impact_data():
         "total_users": total_users,
         "type_breakdown": type_breakdown,
     }
+
+
+def _get_org_impact_data(org_id):
+    """Calculate organization-wide impact statistics."""
+    database = get_database()
+    
+    # Get all users in the organization
+    org_users = list(database.users.find({"org_id": org_id}, {"_id": 1}))
+    org_user_ids = [u["_id"] for u in org_users]
+    
+    if not org_user_ids:
+        return {"total_org_points": 0, "total_org_kg_recycled": 0}
+    
+    # Aggregate all waste logs for org users
+    pipeline = [
+        {"$match": {"user_id": {"$in": org_user_ids}}},
+        {
+            "$group": {
+                "_id": None,
+                "total_points": {"$sum": "$points"},
+                "total_quantity": {"$sum": "$quantity"},
+            }
+        },
+    ]
+    
+    result = list(database.waste_logs.aggregate(pipeline))
+    
+    if result:
+        return {
+            "total_org_points": result[0].get("total_points", 0),
+            "total_org_kg_recycled": result[0].get("total_quantity", 0),
+        }
+    
+    return {"total_org_points": 0, "total_org_kg_recycled": 0}
 
 
 def _get_activity_feed():

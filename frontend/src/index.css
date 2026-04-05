@@ -1,6 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
+/* Enable class-based dark mode */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: "Plus Jakarta Sans", sans-serif;
   
@@ -36,8 +39,8 @@
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
-  /* Dark mode body styles - using data-theme attribute */
-  [data-theme="dark"] body {
+  /* Dark mode body styles */
+  .dark body {
     background-color: var(--color-dark-bg);
     color: var(--color-dark-text);
   }
@@ -50,26 +53,18 @@
     border-radius: 10px; 
   }
 
-  [data-theme="dark"] ::-webkit-scrollbar-thumb {
+  .dark ::-webkit-scrollbar-thumb {
     background: #4a5568;
   }
 }
 
 @layer components {
   .glass-card {
-    @apply bg-white/80 backdrop-blur-md border border-slate-200/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)];
-  }
-
-  [data-theme="dark"] .glass-card {
-    @apply bg-gray-800/80 border-gray-700/60 shadow-[0_8px_30px_rgb(0,0,0,0.3)];
+    @apply bg-white/80 backdrop-blur-md border border-slate-200/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:bg-gray-800/80 dark:border-gray-700/60 dark:shadow-[0_8px_30px_rgb(0,0,0,0.3)];
   }
 
   /* Theme Toggle Button */
   .theme-toggle {
-    @apply flex h-10 w-10 items-center justify-center rounded-xl border border-neutral-200 bg-white text-neutral-600 shadow-sm transition-all hover:bg-neutral-50 hover:text-neutral-900 hover:shadow-md;
-  }
-
-  [data-theme="dark"] .theme-toggle {
-    @apply border-dark-border bg-dark-surface text-dark-text-muted hover:bg-dark-bg hover:text-dark-text;
+    @apply flex h-10 w-10 items-center justify-center rounded-xl border border-neutral-200 bg-white text-neutral-600 shadow-sm transition-all hover:bg-neutral-50 hover:text-neutral-900 hover:shadow-md dark:border-dark-border dark:bg-dark-surface dark:text-dark-text-muted dark:hover:bg-dark-bg dark:hover:text-dark-text;
   }
 }

@@ -4,6 +4,7 @@ from flask_socketio import SocketIO
 
 from app.config import Config
 from app.extensions import init_mongo
+from app.routes.analytics import analytics_bp
 from app.routes.auth import auth_bp
 from app.routes.dashboard import dashboard_bp
 from app.routes.impact import impact_bp
@@ -27,6 +28,7 @@ def create_app() -> Flask:
 
     init_mongo(app)
 
+    app.register_blueprint(analytics_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(waste_bp)
     app.register_blueprint(dashboard_bp)

@@ -2,10 +2,18 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import { io, Socket } from 'socket.io-client'
 import type { ImpactData, ActivityFeedItem } from '../types'
 
+export interface OrgLogData {
+  total_org_points: number
+  total_org_kg_recycled: number
+  department?: string
+  user_name?: string
+}
+
 interface UseSocketOptions {
   onNewActivity?: (activity: ActivityFeedItem) => void
   onImpactUpdate?: (impact: ImpactData) => void
   onLeaderboardUpdate?: () => void
+  onNewOrgLog?: (data: OrgLogData) => void
 }
 
 export function useSocket(options: UseSocketOptions = {}) {
@@ -18,13 +26,15 @@ export function useSocket(options: UseSocketOptions = {}) {
   const onNewActivityRef = useRef(options.onNewActivity)
   const onImpactUpdateRef = useRef(options.onImpactUpdate)
   const onLeaderboardUpdateRef = useRef(options.onLeaderboardUpdate)
+  const onNewOrgLogRef = useRef(options.onNewOrgLog)
 
   // Update refs when callbacks change
   useEffect(() => {
     onNewActivityRef.current = options.onNewActivity
     onImpactUpdateRef.current = options.onImpactUpdate
     onLeaderboardUpdateRef.current = options.onLeaderboardUpdate
-  }, [options.onNewActivity, options.onImpactUpdate, options.onLeaderboardUpdate])
+    onNewOrgLogRef.current = options.onNewOrgLog
+  }, [options.onNewActivity, options.onImpactUpdate, options.onLeaderboardUpdate, options.onNewOrgLog])
 
   useEffect(() => {
     const apiBase = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:5000'
@@ -72,6 +82,11 @@ export function useSocket(options: UseSocketOptions = {}) {
 
     socket.on('leaderboard_updated', () => {
       onLeaderboardUpdateRef.current?.()
+    })
+
+    // Real-time org sync - new org log event
+    socket.on('new_org_log', (data: OrgLogData) => {
+      onNewOrgLogRef.current?.(data)
     })
 
     return () => {

@@ -17,7 +17,12 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [theme, setTheme] = useState<ThemeMode>(getInitialTheme)
 
   useEffect(() => {
-    document.documentElement.dataset.theme = theme
+    const root = document.documentElement
+    if (theme === 'dark') {
+      root.classList.add('dark')
+    } else {
+      root.classList.remove('dark')
+    }
     window.localStorage.setItem(storageKey, theme)
   }, [theme])
 

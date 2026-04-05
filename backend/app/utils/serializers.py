@@ -8,6 +8,9 @@ def serialize_user(user: dict) -> dict:
         "email": user["email"],
         "email_verified": user.get("email_verified", False),
         "total_points": user.get("total_points", 0),
+        "org_id": user.get("org_id"),
+        "department": user.get("department"),
+        "role": user.get("role", "user"),
     }
 
 

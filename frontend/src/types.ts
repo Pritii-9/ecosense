@@ -4,6 +4,8 @@ export interface User {
   email: string
   email_verified: boolean
   total_points: number
+  org_id?: string
+  role?: string
 }
 
 export interface WasteLog {
@@ -89,4 +91,28 @@ export interface ActivityFeedItem {
 
 export interface ActivityFeedResponse {
   feed: ActivityFeedItem[]
+}
+
+export interface ForecastData {
+  forecast_period_days: number
+  daily_forecast_kg_co2: number[]
+  total_forecast_kg_co2: number
+  last_30_days_total_kg_co2: number
+  avg_daily_kg_co2: number
+  data_quality: 'sparse' | 'sufficient'
+  days_with_data: number
+  model_used: 'growth_fallback' | 'linear_regression'
+}
+
+export interface DepartmentImpact {
+  department: string
+  total_kg_recycled: number
+  total_points: number
+  log_count: number
+}
+
+export interface OrgImpactData {
+  total_org_points: number
+  total_org_kg_recycled: number
+  department_breakdown: DepartmentImpact[]
 }

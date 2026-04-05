@@ -138,6 +138,25 @@ def request_register_code():
     )
 
 
+VALID_DEPARTMENTS = ["Engineering", "Sales", "Marketing", "HR", "Finance", "Operations", "Executive"]
+VALID_ROLES = ["user", "admin", "ceo"]
+
+
+def _normalize_org_id(raw: object) -> str | None:
+    val = str(raw or "").strip()
+    return val if val else None
+
+
+def _normalize_department(raw: object) -> str | None:
+    val = str(raw or "").strip()
+    return val if val else None
+
+
+def _normalize_role(raw: object) -> str:
+    val = str(raw or "").strip().lower()
+    return val if val in VALID_ROLES else "user"
+
+
 @auth_bp.post("/register")
 def register():
     payload = _read_json()
@@ -145,6 +164,9 @@ def register():
     email = _normalize_email(payload.get("email"))
     password = _normalize_password(payload.get("password"))
     code = _normalize_code(payload.get("code"))
+    org_id = _normalize_org_id(payload.get("org_id"))
+    department = _normalize_department(payload.get("department"))
+    role = _normalize_role(payload.get("role"))
 
     is_valid, error_response = _validate_name_email(name, email)
     if not is_valid:
@@ -174,6 +196,9 @@ def register():
         "email_verified": True,
         "verified_at": datetime.now(UTC),
         "total_points": 0,
+        "org_id": org_id,
+        "department": department,
+        "role": role,
         "created_at": datetime.now(UTC),
     }
 

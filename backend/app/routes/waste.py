@@ -91,8 +91,21 @@ def create_waste_log():
 
 def get_waste_logs():
     database = get_database()
+    current_user = g.current_user
+    user_role = current_user.get("role", "user")
+    user_org_id = current_user.get("org_id")
+
+    # CEO/Admin can see all logs in their org; regular users see only their own
+    if user_role in ("ceo", "admin") and user_org_id:
+        # Get all user IDs in the org
+        org_users = list(database.users.find({"org_id": user_org_id}, {"_id": 1}))
+        org_user_ids = [u["_id"] for u in org_users]
+        query = {"user_id": {"$in": org_user_ids}}
+    else:
+        query = {"user_id": ObjectId(g.current_user_id)}
+
     logs = list(
-        database.waste_logs.find({"user_id": ObjectId(g.current_user_id)}).sort(
+        database.waste_logs.find(query).sort(
             [("date", -1), ("created_at", -1)]
         )
     )

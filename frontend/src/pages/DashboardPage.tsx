@@ -1,11 +1,13 @@
 import { Plus, Lightbulb, ArrowRight, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { StatCard } from '../components/StatCard';
-import { RecentLogsTable } from '../components/RecentLogsTable';
+import { ForecastCard } from '../components/ForecastCard';
+import { EnterpriseTabs } from '../components/EnterpriseTabs';
 import { useAuth } from '../hooks/useAuth';
-import { useEffect, useState } from 'react';
+import { useSocket } from '../hooks/useSocket';
+import { useEffect, useState, useCallback } from 'react';
 import { api } from '../lib/api';
-import type { WasteLog } from '../types';
+import type { WasteLog, ForecastData } from '../types';
 
 interface DashboardData {
   total_points: number;
@@ -15,6 +17,16 @@ interface DashboardData {
 export const DashboardPage = () => {
   const { user } = useAuth();
   const [data, setData] = useState<DashboardData | null>(null);
+  const [forecast, setForecast] = useState<ForecastData | null>(null);
+  const [forecastLoading, setForecastLoading] = useState(false);
+
+  // Socket for real-time org sync
+  useSocket({
+    onNewOrgLog: useCallback((data) => {
+      // Dispatch custom event for EnterpriseTabs to listen to
+      window.dispatchEvent(new CustomEvent('new_org_log', { detail: data }));
+    }, []),
+  });
 
   useEffect(() => {
     const fetchDashboard = async () => {
@@ -28,11 +40,27 @@ export const DashboardPage = () => {
     fetchDashboard();
   }, []);
 
+  useEffect(() => {
+    const fetchForecast = async () => {
+      setForecastLoading(true);
+      try {
+        const response = await api.get('/analytics/forecast');
+        setForecast(response.data);
+      } catch (error) {
+        console.error('Failed to fetch forecast data:', error);
+      } finally {
+        setForecastLoading(false);
+      }
+    };
+    fetchForecast();
+  }, []);
+
   return (
     <div className="space-y-10">
+      {/* Welcome Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-extrabold text-slate-900 dark:text-dark-text-heading tracking-tight">
+          <h1 className="text-4xl font-black text-slate-900 dark:text-dark-text-heading tracking-tight">
             Welcome, <span className="text-brand-primary">{user?.name?.split(' ')[0]}</span>
           </h1>
           <p className="text-slate-500 dark:text-dark-text-muted font-medium mt-1">Metrics and impact overview for your workspace.</p>
@@ -42,20 +70,21 @@ export const DashboardPage = () => {
         </Link>
       </div>
 
+      {/* Forecast Intelligence Card */}
+      <ForecastCard forecast={forecast} loading={forecastLoading} />
+
+      {/* Main Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard eyebrow="Total Yield" title={`${data?.total_points ?? 0}`} description="Points earned from recycling." icon={Zap} trend="+12%" />
         <StatCard eyebrow="Verification" title="Active" description="All logs current and verified." icon={Plus} />
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-slate-900 dark:text-dark-text-heading">Recent Transactions</h2>
-            <button className="text-sm font-bold text-brand-primary hover:underline">View All</button>
-          </div>
-          <RecentLogsTable logs={data?.recent_logs ?? []} />
-        </div>
+      {/* Enterprise Intelligence Tabs */}
+      <EnterpriseTabs recentLogs={data?.recent_logs ?? []} />
 
+      {/* Side Card - Optimization Tip */}
+      <div className="grid lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2" />
         <div className="space-y-6">
            <div className="bg-brand-dark dark:bg-dark-card rounded-3xl p-8 text-white dark:text-dark-text relative overflow-hidden border border-dark-border">
               <div className="relative z-10">
