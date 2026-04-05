@@ -326,6 +326,34 @@ def get_current_user():
     return jsonify({"user": serialize_user(current_user)}), 200
 
 
+@auth_bp.put("/profile")
+@jwt_required
+def update_profile():
+    """Update current user's profile (name, department, etc.)."""
+    current_user = g.current_user
+    payload = _read_json()
+    updates = {}
+
+    name = _normalize_name(payload.get("name"))
+    if name and is_valid_name(name):
+        updates["name"] = name
+
+    department = _normalize_department(payload.get("department"))
+    if department and department in VALID_DEPARTMENTS:
+        updates["department"] = department
+
+    if not updates:
+        return jsonify({"error": "No valid fields to update."}), 400
+
+    get_database().users.update_one(
+        {"_id": current_user["_id"]},
+        {"$set": updates}
+    )
+
+    updated_user = get_database().users.find_one({"_id": current_user["_id"]})
+    return jsonify({"message": "Profile updated successfully.", "user": serialize_user(updated_user)}), 200
+
+
 @auth_bp.post("/logout")
 def logout():
     return jsonify({"message": "Logout successful"}), 200

@@ -20,22 +20,23 @@ export const TeamManagementPage = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [activeTab, setActiveTab] = useState<'members' | 'invites'>('members')
 
+  const isAdmin = user?.role === 'admin' || user?.role === 'ceo'
+
   useEffect(() => {
     if (!token) {
       navigate('/login')
       return
     }
-    if (user?.role !== 'admin' && user?.role !== 'ceo') {
-      navigate('/dashboard')
-      return
-    }
     fetchData()
-  }, [token, user, navigate])
+  }, [token, navigate])
 
   const fetchData = async () => {
     setLoading(true)
     try {
-      await Promise.all([fetchTeamMembers(), fetchPendingInvites()])
+      await Promise.all([
+        fetchTeamMembers(),
+        ...(isAdmin ? [fetchPendingInvites()] : [])
+      ])
     } catch (err) {
       console.error('Failed to fetch data:', err)
     } finally {
@@ -122,7 +123,9 @@ export const TeamManagementPage = () => {
     }
   }
 
-  const filteredMembers = teamMembers.filter((member) =>
+  // Sort members by points (leaderboard style) and then filter by search
+  const sortedMembers = [...teamMembers].sort((a, b) => (b.total_points ?? 0) - (a.total_points ?? 0))
+  const filteredMembers = sortedMembers.filter((member) =>
     member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     member.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
     (member.department?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
@@ -138,6 +141,13 @@ export const TeamManagementPage = () => {
     if (role === 'ceo') return 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800'
     if (role === 'admin') return 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800'
     return 'bg-slate-50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700'
+  }
+
+  const getRankIcon = (rank: number) => {
+    if (rank === 1) return <Crown size={16} className="text-amber-500" />
+    if (rank === 2) return <Star size={16} className="text-slate-400" />
+    if (rank === 3) return <Star size={16} className="text-amber-700" />
+    return null
   }
 
   if (loading) {
@@ -157,44 +167,46 @@ export const TeamManagementPage = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-dark-text-heading sm:text-3xl">
-            Team Management
+            {isAdmin ? 'Team Management' : 'Team Members'}
           </h1>
           <p className="mt-1 text-sm text-slate-500 dark:text-dark-text-muted">
-            Manage your team members and send invitations
+            {isAdmin ? 'Manage your team members and send invitations' : 'View your team members and their impact'}
           </p>
         </div>
       </div>
 
-      {/* Tab Navigation */}
-      <div className="flex rounded-xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-card p-1 shadow-sm w-fit">
-        <button
-          type="button"
-          onClick={() => setActiveTab('members')}
-          className={`rounded-lg px-4 py-2 text-sm font-medium transition-all flex items-center gap-2 ${
-            activeTab === 'members'
-              ? 'bg-emerald-500 text-white shadow-sm'
-              : 'text-slate-600 dark:text-dark-text-muted hover:bg-slate-100 dark:hover:bg-dark-surface'
-          }`}
-        >
-          <Users size={16} />
-          Members ({teamMembers.length})
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab('invites')}
-          className={`rounded-lg px-4 py-2 text-sm font-medium transition-all flex items-center gap-2 ${
-            activeTab === 'invites'
-              ? 'bg-emerald-500 text-white shadow-sm'
-              : 'text-slate-600 dark:text-dark-text-muted hover:bg-slate-100 dark:hover:bg-dark-surface'
-          }`}
-        >
-          <Mail size={16} />
-          Invites ({pendingInvites.length})
-        </button>
-      </div>
+      {/* Tab Navigation - Only for admins */}
+      {isAdmin && (
+        <div className="flex rounded-xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-card p-1 shadow-sm w-fit">
+          <button
+            type="button"
+            onClick={() => setActiveTab('members')}
+            className={`rounded-lg px-4 py-2 text-sm font-medium transition-all flex items-center gap-2 ${
+              activeTab === 'members'
+                ? 'bg-emerald-500 text-white shadow-sm'
+                : 'text-slate-600 dark:text-dark-text-muted hover:bg-slate-100 dark:hover:bg-dark-surface'
+            }`}
+          >
+            <Users size={16} />
+            Members ({teamMembers.length})
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('invites')}
+            className={`rounded-lg px-4 py-2 text-sm font-medium transition-all flex items-center gap-2 ${
+              activeTab === 'invites'
+                ? 'bg-emerald-500 text-white shadow-sm'
+                : 'text-slate-600 dark:text-dark-text-muted hover:bg-slate-100 dark:hover:bg-dark-surface'
+            }`}
+          >
+            <Mail size={16} />
+            Invites ({pendingInvites.length})
+          </button>
+        </div>
+      )}
 
-      {/* Members Tab */}
-      {activeTab === 'members' && (
+      {/* Members List - Always visible for non-admins, tab-controlled for admins */}
+      {(!isAdmin || activeTab === 'members') && (
         <div className="rounded-2xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-card shadow-sm">
           {/* Search Bar */}
           <div className="p-6 border-b border-slate-200 dark:border-dark-border">
@@ -215,38 +227,46 @@ export const TeamManagementPage = () => {
           {/* Members List */}
           <div className="divide-y divide-slate-200 dark:divide-dark-border">
             {filteredMembers.length > 0 ? (
-              filteredMembers.map((member) => (
-                <div
-                  key={member.id}
-                  className="flex items-center justify-between px-6 py-4 hover:bg-slate-50 dark:hover:bg-dark-surface/50 transition-colors"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-100 to-emerald-50 dark:from-emerald-900/30 dark:to-emerald-800/30 border border-emerald-200 dark:border-emerald-700/50 shadow-sm font-bold text-emerald-700 dark:text-emerald-400 text-sm">
-                      {member.name.charAt(0).toUpperCase()}
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <p className="text-sm font-semibold text-slate-900 dark:text-dark-text-heading">{member.name}</p>
-                        {getRoleIcon(member.role ?? 'user')}
+              filteredMembers.map((member) => {
+                const rank = sortedMembers.indexOf(member) + 1
+                return (
+                  <div
+                    key={member.id}
+                    className="flex items-center justify-between px-6 py-4 hover:bg-slate-50 dark:hover:bg-dark-surface/50 transition-colors"
+                  >
+                    <div className="flex items-center gap-4">
+                      {/* Rank */}
+                      <div className="flex flex-col items-center justify-center w-8">
+                        {getRankIcon(rank)}
+                        <span className="text-sm font-bold text-slate-500 dark:text-dark-text-muted">#{rank}</span>
                       </div>
-                      <p className="text-xs text-slate-500 dark:text-dark-text-muted">{member.email}</p>
-                      {member.department && (
-                        <p className="text-xs text-slate-400 dark:text-dark-text-muted mt-0.5">{member.department}</p>
-                      )}
+                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-100 to-emerald-50 dark:from-emerald-900/30 dark:to-emerald-800/30 border border-emerald-200 dark:border-emerald-700/50 shadow-sm font-bold text-emerald-700 dark:text-emerald-400 text-sm">
+                        {member.name.charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm font-semibold text-slate-900 dark:text-dark-text-heading">{member.name}</p>
+                          {getRoleIcon(member.role ?? 'user')}
+                        </div>
+                        <p className="text-xs text-slate-500 dark:text-dark-text-muted">{member.email}</p>
+                        {member.department && (
+                          <p className="text-xs text-slate-400 dark:text-dark-text-muted mt-0.5">{member.department}</p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-medium ${getRoleBadgeColor(member.role ?? 'user')}`}>
+                        {getRoleIcon(member.role ?? 'user')}
+                        {member.role ?? 'user'}
+                      </span>
+                      <div className="text-right">
+                        <p className="text-sm font-bold text-emerald-600 dark:text-emerald-400">{member.total_points.toLocaleString()}</p>
+                        <p className="text-xs text-slate-400 dark:text-dark-text-muted">points</p>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs font-medium ${getRoleBadgeColor(member.role ?? 'user')}`}>
-                      {getRoleIcon(member.role ?? 'user')}
-                      {member.role ?? 'user'}
-                    </span>
-                    <div className="text-right">
-                      <p className="text-sm font-bold text-emerald-600 dark:text-emerald-400">{member.total_points.toLocaleString()}</p>
-                      <p className="text-xs text-slate-400 dark:text-dark-text-muted">points</p>
-                    </div>
-                  </div>
-                </div>
-              ))
+                )
+              })
             ) : (
               <div className="flex flex-col items-center justify-center py-16">
                 <Users size={48} className="text-slate-300 dark:text-dark-text-muted mb-4" />
@@ -262,8 +282,8 @@ export const TeamManagementPage = () => {
         </div>
       )}
 
-      {/* Invites Tab */}
-      {activeTab === 'invites' && (
+      {/* Invites Tab - Admin only */}
+      {isAdmin && activeTab === 'invites' && (
         <div className="space-y-6">
           {/* Invite Form */}
           <div className="rounded-2xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-card p-6 shadow-lg sm:p-8">

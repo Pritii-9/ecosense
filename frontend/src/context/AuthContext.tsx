@@ -11,6 +11,7 @@ interface AuthContextValue {
   login: (token: string, user: User) => void
   logout: () => Promise<void>
   syncUserPoints: (totalPoints: number) => void
+  setUser: (user: User | null) => void
 }
 
 const storageKey = 'ecosense-auth'
@@ -92,7 +93,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [token])
 
   return (
-    <AuthContext.Provider value={{ token, user, authReady, login, logout, syncUserPoints }}>
+    <AuthContext.Provider value={{ token, user, authReady, login, logout, syncUserPoints, setUser }}>
       {children}
     </AuthContext.Provider>
   )
