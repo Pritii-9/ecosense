@@ -36,10 +36,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setToken(session.token)
       setUser(session.user)
       setAuthToken(session.token)
+      
+      // Refresh user data from backend to get updated org_id and role
+      api.get('/auth/me')
+        .then(response => {
+          const freshUser = response.data.user as User
+          setUser(freshUser)
+          window.localStorage.setItem(storageKey, JSON.stringify({ token: session.token, user: freshUser }))
+        })
+        .catch(() => {
+          // If refresh fails, continue with cached user data
+        })
+        .finally(() => {
+          setAuthReady(true)
+        })
     } catch {
       window.localStorage.removeItem(storageKey)
       setAuthToken(null)
-    } finally {
       setAuthReady(true)
     }
   }, [])

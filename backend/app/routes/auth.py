@@ -1,11 +1,11 @@
 from datetime import UTC, datetime
 
 import bcrypt
-from flask import Blueprint, current_app, jsonify, request
+from flask import Blueprint, current_app, g, jsonify, request
 from pymongo.errors import DuplicateKeyError
 
 from app.extensions import get_database
-from app.utils.auth import generate_token
+from app.utils.auth import generate_token, jwt_required
 from app.utils.codes import delete_code, generate_verification_code, save_code, verify_code
 from app.utils.email_service import send_email
 from app.utils.serializers import serialize_user
@@ -154,7 +154,7 @@ def _normalize_department(raw: object) -> str | None:
 
 def _normalize_role(raw: object) -> str:
     val = str(raw or "").strip().lower()
-    return val if val in VALID_ROLES else "user"
+    return val if val in VALID_ROLES else "admin"
 
 
 @auth_bp.post("/register")
@@ -207,6 +207,7 @@ def register():
     except DuplicateKeyError:
         return jsonify({"error": "An account with this email already exists."}), 409
 
+    # NOTE: No auto-creation of organization. Users can create their own org from the dashboard.
     delete_code(email, REGISTER_CODE_PURPOSE)
     created_user = get_database().users.find_one({"_id": result.inserted_id})
     token = generate_token(str(result.inserted_id))
@@ -315,6 +316,14 @@ def reset_password():
     delete_code(email, RESET_CODE_PURPOSE)
 
     return jsonify({"message": "Password updated successfully. You can now log in."}), 200
+
+
+@auth_bp.get("/me")
+@jwt_required
+def get_current_user():
+    """Get current user's fresh data from database."""
+    current_user = g.current_user
+    return jsonify({"user": serialize_user(current_user)}), 200
 
 
 @auth_bp.post("/logout")

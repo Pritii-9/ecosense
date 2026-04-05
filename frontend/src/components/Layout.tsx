@@ -1,4 +1,4 @@
-import { LayoutDashboard, Leaf, Trophy, Map, LogOut, Bell, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, Leaf, Trophy, Map, LogOut, Bell, Sun, Moon, Users, Plus } from 'lucide-react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useTheme } from '../context/ThemeContext';
@@ -10,11 +10,14 @@ export const Layout = () => {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
+  const isAdmin = user?.role === 'admin' || user?.role === 'ceo';
+
   const navItems = [
     { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { label: 'Impact', path: '/impact', icon: Leaf },
     { label: 'Leaderboard', path: '/leaderboard', icon: Trophy },
     { label: 'Map', path: '/map', icon: Map },
+    ...(isAdmin ? [{ label: 'Team', path: '/team', icon: Users }] : []),
   ];
 
 
@@ -61,9 +64,24 @@ export const Layout = () => {
             </nav>
           </div>
 
-          {/* Right Section */}
-          <div className="flex items-center gap-4">
-            {/* Notification Bell */}
+           {/* Right Section */}
+           <div className="flex items-center gap-4">
+             {/* Log Activity Button */}
+             <NavLink
+               to="/log-waste"
+               className={({ isActive }) =>
+                 `hidden md:flex items-center gap-2 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 shadow-md ${
+                   isActive
+                     ? 'bg-emerald-600 text-white shadow-emerald-500/30'
+                     : 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-emerald-500/20 hover:shadow-emerald-500/40 hover:scale-105'
+                 }`
+               }
+             >
+               <Plus size={16} />
+               Log Activity
+             </NavLink>
+
+             {/* Notification Bell */}
             <button className="relative p-2.5 text-slate-500 dark:text-dark-text-muted hover:text-slate-700 dark:hover:text-dark-text-heading hover:bg-slate-100 dark:hover:bg-dark-card rounded-xl transition-all duration-200">
               <Bell size={18} />
               <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-red-500 rounded-full ring-2 ring-white dark:ring-dark-surface" />

@@ -144,11 +144,17 @@ export const LoginPage = () => {
         </div>
 
         {/* Footer Links */}
-        <div className="mt-8 text-center">
+        <div className="mt-8 space-y-3 text-center">
           <p className="text-sm text-slate-500 dark:text-dark-text-muted">
             Don't have an account?{' '}
             <Link className="font-semibold text-emerald-600 dark:text-emerald-400 transition-colors hover:text-emerald-700 dark:hover:text-emerald-300" to="/register">
               Create one now
+            </Link>
+          </p>
+          <p className="text-sm text-slate-500 dark:text-dark-text-muted">
+            Have an invitation code?{' '}
+            <Link className="font-semibold text-emerald-600 dark:text-emerald-400 transition-colors hover:text-emerald-700 dark:hover:text-emerald-300" to="/team-invite">
+              Join your team here
             </Link>
           </p>
         </div>

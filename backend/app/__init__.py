@@ -10,6 +10,7 @@ from app.routes.dashboard import dashboard_bp
 from app.routes.impact import impact_bp
 from app.routes.leaderboard import leaderboard_bp
 from app.routes.recycling_centers import recycling_centers_bp
+from app.routes.team import team_bp
 from app.routes.waste import waste_bp
 
 socketio = SocketIO(cors_allowed_origins="*")
@@ -35,6 +36,7 @@ def create_app() -> Flask:
     app.register_blueprint(leaderboard_bp)
     app.register_blueprint(recycling_centers_bp)
     app.register_blueprint(impact_bp)
+    app.register_blueprint(team_bp)
 
     @app.get("/health")
     def health_check():

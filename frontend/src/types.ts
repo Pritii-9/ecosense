@@ -116,3 +116,25 @@ export interface OrgImpactData {
   total_org_kg_recycled: number
   department_breakdown: DepartmentImpact[]
 }
+
+export interface TeamMember extends User {
+  rank: number
+  department?: string
+}
+
+export interface TeamInviteResult {
+  invited: string[]
+  already_exists: string[]
+  failed: { email: string; reason: string }[]
+}
+
+export interface PendingInvite {
+  _id: string
+  email: string
+  org_id: string
+  invited_by: string
+  code: string
+  status: string
+  created_at: string
+  expires_at: string
+}

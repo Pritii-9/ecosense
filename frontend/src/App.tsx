@@ -12,6 +12,9 @@ import { LoginPage } from './pages/LoginPage'
 import { LogWastePage } from './pages/LogWastePage'
 import { MapPage } from './pages/MapPage'
 import { RegisterPage } from './pages/RegisterPage'
+import { TeamInvitePage } from './pages/TeamInvitePage'
+import { TeamLoginPage } from './pages/TeamLoginPage'
+import { TeamManagementPage } from './pages/TeamManagementPage'
 
 function App() {
   return (
@@ -40,6 +43,14 @@ function App() {
           </PublicRoute>
         }
       />
+      <Route
+        path="/team-invite"
+        element={
+          <PublicRoute>
+            <TeamLoginPage />
+          </PublicRoute>
+        }
+      />
       <Route element={<ProtectedRoute />}>
         <Route element={<Layout />}>
           <Route index element={<DashboardPage />} />
@@ -48,6 +59,8 @@ function App() {
           <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="/impact" element={<ImpactPage />} />
           <Route path="/map" element={<MapPage />} />
+          <Route path="/team" element={<TeamManagementPage />} />
+          <Route path="/team/invite" element={<TeamInvitePage />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
