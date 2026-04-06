@@ -1,143 +1,111 @@
-# EcoSense - Waste Management & Recycling Tracker
+# EcoSense - Precision Metrics for Sustainability
 
-EcoSense is a beginner-friendly full-stack web application for tracking recyclable waste, earning points, and finding recycling centers.
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.13+](https://img.shields.io/badge/python-3.13+-blue.svg)](https://www.python.org/downloads/)
+[![Node.js 20+](https://img.shields.io/badge/node-20+-green.svg)](https://nodejs.org/)
+[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](https://www.docker.com/)
+
+A professional-grade full-stack platform for monitoring environmental impact, logging waste, and contributing to a verified circular economy. Built with React, Flask, MongoDB, and Socket.IO.
+
+---
 
 ## Features
 
-- JWT authentication with bcrypt password hashing
-- Email verification during registration using 6-digit codes
-- Forgot-password flow using email reset codes
-- Waste logging by type, quantity, and date
-- Automatic point calculation
-- Personal dashboard with recent logs and breakdown
-- Top-10 leaderboard
-- Nearby recycling centers with OpenStreetMap links and embed
-- **Real-time community impact dashboard** with live WebSocket updates
-- **Live activity feed** showing anonymized recycling activity across the platform
-- **Environmental impact tracking** (CO2 saved, trees saved equivalent)
+### Core Functionality
+- **Waste Logging** - Track recyclable waste by type, quantity, and date with automatic point calculation
+- **Real-Time Dashboard** - Live community impact metrics with WebSocket-powered updates
+- **Leaderboards** - Global and team-based rankings to drive engagement
+- **Recycling Centers** - Find nearby certified recycling terminals with map integration
+- **Team Management** - Invite-code-based onboarding with role-based access control
+
+### Authentication & Security
+- **JWT Authentication** - Secure token-based auth with bcrypt password hashing
+- **Email Verification** - 6-digit code verification during registration
+- **Password Reset** - Secure forgot-password flow with email-based reset codes
+- **Protected Routes** - Client and server-side route guards
+
+### Analytics & Insights
+- **Environmental Impact** - Track CO2 saved, trees saved, and other sustainability metrics
+- **Activity Feed** - Real-time anonymized platform activity
+- **Forecasting** - Predictive analytics for future environmental impact
+- **Team Analytics** - Collaborative impact measurement and reporting
+
+### UI/UX
+- **Dark/Light Mode** - Theme-aware design with smooth transitions
+- **Responsive Design** - Mobile-first, works on all screen sizes
+- **Glass-Morphism UI** - Modern design with backdrop blur effects
+- **Real-Time Notifications** - Dropdown notification system
+
+---
 
 ## Tech Stack
 
-- Backend: Flask + PyMongo
-- Frontend: React + TypeScript + Tailwind CSS
-- Database: MongoDB Atlas
-- Email: SMTP
-- Containers: Docker + Docker Compose
+| Layer | Technology |
+|-------|-----------|
+| **Frontend** | React 19, TypeScript, Tailwind CSS, Vite |
+| **Backend** | Python 3.13, Flask, Flask-SocketIO, Eventlet |
+| **Database** | MongoDB Atlas |
+| **Real-Time** | Socket.IO (WebSocket) |
+| **Authentication** | JWT (PyJWT), bcrypt |
+| **Email** | SMTP |
+| **Containerization** | Docker, Docker Compose |
+| **Web Server** | Nginx (production frontend), Gunicorn (production backend) |
 
-## Auth API
+---
 
-- `POST /auth/register/request-code`
-- `POST /auth/register`
-- `POST /auth/login`
-- `POST /auth/forgot-password/request-code`
-- `POST /auth/forgot-password/reset`
-- `POST /auth/logout`
+## Architecture
 
-## Waste API
-
-- `GET /waste`
-- `POST /waste`
-- `GET /points`
-- `GET /leaderboard`
-- `GET /recycling-centers`
-- `GET /health`
-
-## Impact API (Real-Time)
-
-- `GET /impact` - Community environmental impact statistics (requires auth)
-- `GET /impact/activity-feed` - Recent anonymized activity feed (requires auth)
-
-## WebSocket Events (Socket.IO)
-
-- `connect` - Client connects to real-time server
-- `join_impact_room` - Join the impact room for live updates
-- `request_impact_update` - Request current impact statistics
-- `request_activity_feed` - Request recent activity feed
-- `new_activity` - Server broadcasts new waste log activity
-- `impact_update` - Server broadcasts updated impact stats
-- `leaderboard_updated` - Server notifies leaderboard has changed
-
-## MongoDB Schema
-
-### `users`
-
-```json
-{
-  "_id": "ObjectId",
-  "name": "Priya",
-  "email": "priya@example.com",
-  "password_hash": "bcrypt-hash",
-  "email_verified": true,
-  "total_points": 42,
-  "created_at": "2026-04-04T08:00:00Z"
-}
+```
+┌─────────────────────────────────────────────────────────────┐
+│                      EcoSense Platform                       │
+├─────────────────────────────────────────────────────────────┤
+│                                                               │
+│  ┌──────────────────┐         ┌──────────────────┐          │
+│  │   Frontend       │         │     Backend       │          │
+│  │   (React + TS)   │◄───────►│   (Flask + IO)    │          │
+│  │   Nginx :80      │  HTTP   │   Gunicorn :5000  │          │
+│  └──────────────────┘         └────────┬─────────┘          │
+│                                        │                     │
+│                              ┌─────────▼─────────┐          │
+│                              │   MongoDB Atlas    │          │
+│                              │   (Cloud Database) │          │
+│                              └───────────────────┘          │
+│                                                               │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-### `waste_logs`
+---
 
-```json
-{
-  "_id": "ObjectId",
-  "user_id": "ObjectId",
-  "type": "Plastic",
-  "quantity": 3,
-  "points": 15,
-  "date": "2026-04-04T00:00:00Z",
-  "created_at": "2026-04-04T08:10:00Z"
-}
+## Quick Start
+
+### Prerequisites
+- Python 3.13+
+- Node.js 20+
+- MongoDB Atlas account (free tier works)
+- SMTP email account (Gmail with app password recommended)
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/Pritii-9/ecosense.git
+cd ecosense
 ```
 
-### `auth_codes`
+### 2. Backend Setup
 
-```json
-{
-  "_id": "ObjectId",
-  "email": "priya@example.com",
-  "purpose": "register",
-  "code_hash": "sha256-hash",
-  "created_at": "2026-04-04T08:01:00Z",
-  "expires_at": "2026-04-04T08:11:00Z",
-  "attempt_count": 0,
-  "metadata": {
-    "name": "Priya"
-  }
-}
+Create `backend/.env` from the example:
+```bash
+cp backend/.env.example backend/.env
 ```
 
-## Environment Files
-
-Create this backend file:
-
-- `backend/.env`
-
-Start from:
-
-- [backend/.env.example](/d:/ecosense/backend/.env.example)
-
-Important backend variables:
-
-- `MONGO_URI`
-- `MONGO_DB_NAME`
-- `JWT_SECRET_KEY`
-- `AUTH_CODE_EXPIRY_MINUTES`
-- `SMTP_HOST`
-- `SMTP_PORT`
-- `SMTP_USERNAME`
-- `SMTP_PASSWORD`
-- `SMTP_USE_TLS`
-- `SMTP_FROM_EMAIL`
-- `SMTP_FROM_NAME`
-
-Example:
-
+Edit `backend/.env` with your configuration:
 ```env
 APP_NAME=EcoSense
-MONGO_URI=mongodb+srv://your-user:your-password@cluster0.mongodb.net/?retryWrites=true&w=majority&appName=EcoSense
+MONGO_URI=mongodb+srv://your-user:your-password@cluster0.mongodb.net/ecosense
 MONGO_DB_NAME=ecosense
-JWT_SECRET_KEY=replace-with-a-long-random-secret
+JWT_SECRET_KEY=your-super-secret-key-here
 JWT_EXPIRES_IN_HOURS=24
 AUTH_CODE_EXPIRY_MINUTES=10
-CORS_ORIGINS=http://localhost:5173,http://localhost:3000,http://localhost:8080
+CORS_ORIGINS=http://localhost:5173,http://localhost:8080
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USERNAME=your-email@gmail.com
@@ -147,56 +115,286 @@ SMTP_FROM_EMAIL=your-email@gmail.com
 SMTP_FROM_NAME=EcoSense
 ```
 
-Create this frontend file:
+### 3. Frontend Setup
 
-- `frontend/.env`
+Create `frontend/.env` from the example:
+```bash
+cp frontend/.env.example frontend/.env
+```
 
-Start from:
-
-- [frontend/.env.example](/d:/ecosense/frontend/.env.example)
-
-Frontend example:
-
+Edit `frontend/.env`:
 ```env
 VITE_API_BASE_URL=http://localhost:5000
 ```
 
-## Local Run
+### 4. Run Locally
 
-### Backend
-
-```powershell
+**Backend:**
+```bash
 cd backend
 python -m venv .venv
-.venv\Scripts\activate
+.venv\Scripts\activate  # Windows
+# source .venv/bin/activate  # macOS/Linux
 pip install -r requirements.txt
 python run.py
 ```
 
-### Frontend
-
-```powershell
+**Frontend:**
+```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-## Docker
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-```powershell
+---
+
+## Docker Deployment
+
+### Build and Run
+```bash
 docker compose up --build
 ```
 
-Frontend:
+### Access Points
+- **Frontend:** [http://localhost:8080](http://localhost:8080)
+- **Backend API:** [http://localhost:5000](http://localhost:5000)
 
-- `http://localhost:8080`
+### Stop Services
+```bash
+docker compose down
+```
 
-Backend:
+### Rebuild Without Cache
+```bash
+docker compose build --no-cache
+```
 
-- `http://localhost:5000`
+---
 
-## Validation
+## API Documentation
 
-- `npm run lint`
-- `npm run build`
-- `python -m compileall backend`
+### Authentication Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/auth/register/request-code` | Request email verification code |
+| `POST` | `/auth/register` | Complete registration |
+| `POST` | `/auth/login` | Authenticate user |
+| `POST` | `/auth/forgot-password/request-code` | Request password reset code |
+| `POST` | `/auth/forgot-password/reset` | Reset password with code |
+| `POST` | `/auth/logout` | Invalidate token |
+
+### Waste Management Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/waste` | Get user's waste logs |
+| `POST` | `/waste` | Create new waste log |
+| `GET` | `/points` | Get user's total points |
+
+### Analytics & Impact Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/impact` | Community environmental impact stats |
+| `GET` | `/impact/activity-feed` | Recent anonymized activity feed |
+| `GET` | `/leaderboard` | Top 10 users by points |
+| `GET` | `/analytics/forecast` | Impact forecasting data |
+
+### Team Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/team/invite` | Generate team invite code |
+| `POST` | `/team/invite/accept` | Accept invite and join team |
+| `GET` | `/team/members` | Get team members |
+
+### Health Check
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/health` | API health status |
+
+---
+
+## WebSocket Events (Socket.IO)
+
+| Event | Direction | Description |
+|-------|-----------|-------------|
+| `connect` | Server | Client connected |
+| `join_impact_room` | Client | Join real-time impact updates |
+| `impact_update` | Server | Broadcast updated impact stats |
+| `new_activity` | Server | Broadcast new waste log activity |
+| `leaderboard_updated` | Server | Notify leaderboard changed |
+
+---
+
+## Database Schema
+
+### `users` Collection
+```json
+{
+  "_id": "ObjectId",
+  "name": "string",
+  "email": "string (unique)",
+  "username": "string (unique, optional)",
+  "password_hash": "string (bcrypt)",
+  "email_verified": "boolean",
+  "total_points": "number",
+  "team_id": "ObjectId (optional)",
+  "created_at": "datetime"
+}
+```
+
+### `waste_logs` Collection
+```json
+{
+  "_id": "ObjectId",
+  "user_id": "ObjectId",
+  "type": "string (Plastic|Paper|Glass|Metal|Organic|E-Waste)",
+  "quantity": "number (kg)",
+  "points": "number",
+  "date": "datetime",
+  "created_at": "datetime"
+}
+```
+
+### `auth_codes` Collection
+```json
+{
+  "_id": "ObjectId",
+  "email": "string",
+  "purpose": "string (register|reset_password)",
+  "code_hash": "string (SHA-256)",
+  "created_at": "datetime",
+  "expires_at": "datetime",
+  "attempt_count": "number",
+  "metadata": "object"
+}
+```
+
+---
+
+## Project Structure
+
+```
+ecosense/
+├── backend/
+│   ├── app/
+│   │   ├── __init__.py          # Flask app factory
+│   │   ├── config.py            # Configuration management
+│   │   ├── extensions.py        # Flask extensions
+│   │   ├── socket_events.py     # Socket.IO event handlers
+│   │   ├── models/              # Data models
+│   │   ├── routes/              # API route handlers
+│   │   └── utils/               # Utility functions
+│   ├── requirements.txt         # Python dependencies
+│   ├── run.py                   # Application entry point
+│   └── Dockerfile               # Backend container
+├── frontend/
+│   ├── src/
+│   │   ├── components/          # React components
+│   │   ├── pages/               # Page components
+│   │   ├── context/             # React context providers
+│   │   ├── hooks/               # Custom React hooks
+│   │   ├── lib/                 # API client, validation
+│   │   └── types.ts             # TypeScript types
+│   ├── package.json             # Node dependencies
+│   ├── vite.config.ts           # Vite configuration
+│   └── Dockerfile               # Frontend container
+├── docker-compose.yml           # Multi-container orchestration
+└── README.md                    # This file
+```
+
+---
+
+## Development
+
+### Frontend Commands
+```bash
+npm run dev      # Start development server
+npm run build    # Build for production
+npm run lint     # Run ESLint
+npm run preview  # Preview production build
+```
+
+### Backend Commands
+```bash
+python run.py              # Start development server
+python -m compileall .     # Check syntax
+```
+
+---
+
+## Environment Variables Reference
+
+### Backend (.env)
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `MONGO_URI` | MongoDB connection string | `mongodb+srv://...` |
+| `MONGO_DB_NAME` | Database name | `ecosense` |
+| `JWT_SECRET_KEY` | JWT signing secret | `random-long-string` |
+| `JWT_EXPIRES_IN_HOURS` | Token expiry | `24` |
+| `AUTH_CODE_EXPIRY_MINUTES` | Verification code expiry | `10` |
+| `CORS_ORIGINS` | Allowed origins | `http://localhost:5173` |
+| `SMTP_HOST` | Email server host | `smtp.gmail.com` |
+| `SMTP_PORT` | Email server port | `587` |
+| `SMTP_USERNAME` | Email username | `user@gmail.com` |
+| `SMTP_PASSWORD` | Email password/app password | `app-password` |
+| `SMTP_USE_TLS` | Use TLS encryption | `true` |
+| `SMTP_FROM_EMAIL` | Sender email | `noreply@ecosense.com` |
+| `SMTP_FROM_NAME` | Sender name | `EcoSense` |
+
+### Frontend (.env)
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `VITE_API_BASE_URL` | Backend API URL | `http://localhost:5000` |
+
+---
+
+## Security Considerations
+
+- **JWT tokens** are used for authentication with configurable expiry
+- **Passwords** are hashed using bcrypt with salt rounds
+- **Verification codes** are SHA-256 hashed before storage
+- **CORS** is configured to allow only specific origins
+- **Rate limiting** on authentication endpoints
+- **Input validation** on both client and server side
+- **Non-root users** in Docker containers
+
+---
+
+## Troubleshooting
+
+### MongoDB Connection Issues
+- Verify your MongoDB Atlas IP whitelist includes your current IP
+- Check that `MONGO_URI` is correctly formatted
+- See `backend/MONGO_TROUBLESHOOTING.md` for detailed guidance
+
+### Email Not Sending
+- For Gmail, use an [App Password](https://support.google.com/accounts/answer/185833), not your regular password
+- Ensure `SMTP_USE_TLS=true` for port 587
+- Check spam folder for verification emails
+
+### Docker Build Fails
+- Clear Docker cache: `docker system prune -a`
+- Rebuild without cache: `docker compose build --no-cache`
+- Ensure `.env` files exist in both backend and frontend directories
+
+---
+
+## License
+
+This project is licensed under the MIT License.
+
+---
+
+## Acknowledgments
+
+- OpenStreetMap for recycling center location data
+- Lucide React for beautiful icon library
+- The open-source community for the tools that made this possible
