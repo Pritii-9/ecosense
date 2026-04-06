@@ -16,6 +16,7 @@ import { TeamInvitePage } from './pages/TeamInvitePage'
 import { TeamLoginPage } from './pages/TeamLoginPage'
 import { TeamManagementPage } from './pages/TeamManagementPage'
 import { UsernameSetupPage } from './pages/UsernameSetupPage'
+import { ContactPage } from './pages/ContactPage'
 
 function App() {
   return (
@@ -64,8 +65,11 @@ function App() {
           <Route path="/team/invite" element={<TeamInvitePage />} />
         </Route>
       </Route>
+      <Route path="/setup-username" element={<UsernameSetupPage />} />
       <Route element={<ProtectedRoute />}>
-        <Route path="/setup-username" element={<UsernameSetupPage />} />
+        <Route element={<Layout />}>
+          <Route path="/contact" element={<ContactPage />} />
+        </Route>
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

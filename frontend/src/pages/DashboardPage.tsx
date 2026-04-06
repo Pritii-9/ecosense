@@ -65,7 +65,7 @@ export const DashboardPage = () => {
 
   // Socket for real-time org sync
   useSocket({
-    onNewOrgLog: useCallback((data) => {
+    onNewOrgLog: useCallback((data: unknown) => {
       // Dispatch custom event for EnterpriseTabs to listen to
       window.dispatchEvent(new CustomEvent('new_org_log', { detail: data }));
     }, []),
@@ -104,7 +104,7 @@ export const DashboardPage = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-4xl font-black text-slate-900 dark:text-dark-text-heading tracking-tight">
-            Welcome, <span className="text-brand-primary">{user?.username || user?.name?.split(' ')[0]}</span>
+            Welcome, <span className="text-emerald-600 dark:text-emerald-400">{user?.username || user?.name?.split(' ')[0]}</span>
           </h1>
           <p className="text-slate-500 dark:text-dark-text-muted font-medium mt-1">Metrics and impact overview for your workspace.</p>
         </div>
@@ -151,25 +151,25 @@ export const DashboardPage = () => {
       {/* Enterprise Intelligence Tabs */}
       <EnterpriseTabs recentLogs={data?.recent_logs ?? []} />
 
-      {/* Side Card - Optimization Tip */}
-      <div className="grid lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2" />
-        <div className="space-y-6">
-           <div className="bg-brand-dark dark:bg-dark-card rounded-3xl p-8 text-white dark:text-dark-text relative overflow-hidden border border-dark-border">
-              <div className="relative z-10">
-                <Lightbulb className="text-brand-primary mb-4" size={32} />
-                <h3 className="text-xl font-bold">Optimization Tip</h3>
-                <p className="text-emerald-100/70 dark:text-dark-text-muted text-sm mt-3 leading-relaxed">
-                  Sorting your paper waste into "White" and "Mixed" categories increases your point yield by 15%.
-                </p>
-                <Link to="/map" className="flex items-center gap-2 mt-6 font-bold text-sm text-brand-primary group">
-                  Explore Map <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </div>
-              <div className="absolute -bottom-10 -right-10 h-40 w-40 bg-emerald-500/10 rounded-full blur-3xl" />
-           </div>
-        </div>
-      </div>
+       {/* Side Card - Optimization Tip */}
+       <div className="grid lg:grid-cols-3 gap-8">
+         <div className="lg:col-span-2" />
+         <div className="space-y-6">
+            <div className="bg-emerald-700 dark:bg-dark-card rounded-3xl p-8 text-white dark:text-dark-text relative overflow-hidden border border-emerald-600 dark:border-dark-border">
+               <div className="relative z-10">
+                 <Lightbulb className="text-emerald-200 dark:text-emerald-400 mb-4" size={32} />
+                 <h3 className="text-xl font-bold">Optimization Tip</h3>
+                 <p className="text-emerald-100/70 dark:text-dark-text-muted text-sm mt-3 leading-relaxed">
+                   Sorting your paper waste into "White" and "Mixed" categories increases your point yield by 15%.
+                 </p>
+                 <Link to="/map" className="flex items-center gap-2 mt-6 font-bold text-sm text-emerald-200 dark:text-emerald-400 group">
+                   Explore Map <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                 </Link>
+               </div>
+               <div className="absolute -bottom-10 -right-10 h-40 w-40 bg-emerald-500/10 rounded-full blur-3xl" />
+            </div>
+         </div>
+       </div>
 
       {/* Create Org Modal */}
       {showCreateOrg && (

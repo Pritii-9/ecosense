@@ -65,32 +65,32 @@ export const LogWastePage = () => {
   return (
     <div className="grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">
       {/* Form Section */}
-      <section className="rounded-2xl border border-neutral-200 dark:border-dark-border bg-white dark:bg-dark-card p-6 shadow-sm">
+      <section className="rounded-2xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-card p-6 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-50 dark:bg-primary-900/30 text-primary-500">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
             <Leaf size={20} />
           </div>
           <div>
-            <span className="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-dark-text-muted">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-dark-text-muted">
               Waste logger
             </span>
-            <h2 className="text-xl font-bold text-deep-500 dark:text-dark-text-heading">Log a new waste entry</h2>
+            <h2 className="text-xl font-bold text-slate-900 dark:text-dark-text-heading">Log a new waste entry</h2>
           </div>
         </div>
-        <p className="mt-3 text-sm leading-relaxed text-neutral-500 dark:text-dark-text-muted">
+        <p className="mt-3 text-sm leading-relaxed text-slate-500 dark:text-dark-text-muted">
           Each saved entry updates your point total automatically.
         </p>
 
         {/* Reward Rate Card */}
-        <div className="mt-5 rounded-xl bg-primary-50 dark:bg-primary-900/20 p-4 border border-primary-100 dark:border-primary-800">
+        <div className="mt-5 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 p-4 border border-emerald-100 dark:border-emerald-800">
           <div className="flex items-center gap-2">
-            <Recycle size={18} className="text-primary-500" />
+            <Recycle size={18} className="text-emerald-500 dark:text-emerald-400" />
             <div>
-              <p className="text-sm text-neutral-600 dark:text-dark-text">
+              <p className="text-sm text-slate-600 dark:text-dark-text">
                 Current reward rate:{' '}
-                <span className="font-semibold text-primary-500">{wastePointMap[form.type]} points</span> per unit
+                <span className="font-semibold text-emerald-600 dark:text-emerald-400">{wastePointMap[form.type]} points</span> per unit
               </p>
-              <p className="text-xs text-neutral-500 dark:text-dark-text-muted">for <span className="font-medium text-neutral-700 dark:text-dark-text">{form.type}</span></p>
+              <p className="text-xs text-slate-500 dark:text-dark-text-muted">for <span className="font-medium text-slate-700 dark:text-dark-text">{form.type}</span></p>
             </div>
           </div>
         </div>
@@ -98,7 +98,7 @@ export const LogWastePage = () => {
         <form className="mt-6 space-y-5" onSubmit={handleSubmit}>
           {/* Waste Type */}
           <div>
-            <label className="mb-2 block text-sm font-semibold text-neutral-700 dark:text-dark-text">Waste type</label>
+            <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-dark-text">Waste type</label>
             <div className="grid grid-cols-3 gap-2 sm:grid-cols-5">
               {wasteOptions.map((option) => (
                 <button
@@ -107,11 +107,11 @@ export const LogWastePage = () => {
                   onClick={() => setForm((current) => ({ ...current, type: option }))}
                   className={`flex flex-col items-center gap-1.5 rounded-xl border px-3 py-3 text-xs font-medium transition-all ${
                     form.type === option
-                      ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/30 text-primary-500 shadow-sm'
-                      : 'border-neutral-200 dark:border-dark-border bg-white dark:bg-dark-surface text-neutral-600 dark:text-dark-text hover:border-neutral-300 dark:hover:border-dark-text-muted hover:bg-neutral-50 dark:hover:bg-dark-bg'
+                      ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 shadow-sm'
+                      : 'border-slate-200 dark:border-dark-border bg-white dark:bg-dark-surface text-slate-600 dark:text-dark-text hover:border-slate-300 dark:hover:border-dark-text-muted hover:bg-slate-50 dark:hover:bg-dark-bg'
                   }`}
                 >
-                  <Recycle size={18} className={form.type === option ? 'text-primary-500' : 'text-neutral-400 dark:text-dark-text-muted'} />
+                  <Recycle size={18} className={form.type === option ? 'text-emerald-500 dark:text-emerald-400' : 'text-slate-400 dark:text-dark-text-muted'} />
                   {option}
                 </button>
               ))}
@@ -120,17 +120,17 @@ export const LogWastePage = () => {
 
           {/* Quantity */}
           <div>
-            <label className="mb-2 block text-sm font-semibold text-neutral-700 dark:text-dark-text">Quantity</label>
+            <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-dark-text">Quantity</label>
             <div className="flex items-center gap-3">
               <button
                 type="button"
                 onClick={() => setForm((current) => ({ ...current, quantity: Math.max(1, current.quantity - 1) }))}
-                className="flex h-10 w-10 items-center justify-center rounded-lg border border-neutral-200 dark:border-dark-border bg-white dark:bg-dark-surface text-neutral-600 dark:text-dark-text transition-colors hover:bg-neutral-50 dark:hover:bg-dark-bg"
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-surface text-slate-600 dark:text-dark-text transition-colors hover:bg-slate-50 dark:hover:bg-dark-bg"
               >
                 <Minus size={16} />
               </button>
               <input
-                className="h-10 w-20 rounded-lg border border-neutral-200 dark:border-dark-border bg-white dark:bg-dark-surface px-3 text-center text-sm font-semibold text-deep-500 dark:text-dark-text-heading focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                className="h-10 w-20 rounded-lg border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-surface px-3 text-center text-sm font-semibold text-slate-900 dark:text-dark-text-heading focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
                 type="number"
                 min={1}
                 value={form.quantity}
@@ -143,7 +143,7 @@ export const LogWastePage = () => {
               <button
                 type="button"
                 onClick={() => setForm((current) => ({ ...current, quantity: current.quantity + 1 }))}
-                className="flex h-10 w-10 items-center justify-center rounded-lg border border-neutral-200 dark:border-dark-border bg-white dark:bg-dark-surface text-neutral-600 dark:text-dark-text transition-colors hover:bg-neutral-50 dark:hover:bg-dark-bg"
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-surface text-slate-600 dark:text-dark-text transition-colors hover:bg-slate-50 dark:hover:bg-dark-bg"
               >
                 <Plus size={16} />
               </button>
@@ -152,9 +152,9 @@ export const LogWastePage = () => {
 
           {/* Date */}
           <div>
-            <label className="mb-2 block text-sm font-semibold text-neutral-700 dark:text-dark-text">Date</label>
+            <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-dark-text">Date</label>
             <input
-              className="h-10 w-full rounded-lg border border-neutral-200 dark:border-dark-border bg-white dark:bg-dark-surface px-3 text-sm text-deep-500 dark:text-dark-text-heading focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+              className="h-10 w-full rounded-lg border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-surface px-3 text-sm text-slate-900 dark:text-dark-text-heading focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
               type="date"
               value={form.date}
               onChange={(event) => setForm((current) => ({ ...current, date: event.target.value }))}
@@ -165,7 +165,7 @@ export const LogWastePage = () => {
 
           {/* Success Message */}
           {successMessage ? (
-            <div className="flex items-center gap-2 rounded-xl border border-primary-200 dark:border-primary-800 bg-primary-50 dark:bg-primary-900/20 px-4 py-3 text-sm text-primary-500">
+            <div className="flex items-center gap-2 rounded-xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/20 px-4 py-3 text-sm text-emerald-600 dark:text-emerald-400">
               <CheckCircle2 size={16} />
               {successMessage}
             </div>
@@ -181,45 +181,45 @@ export const LogWastePage = () => {
 
           {/* Submit Button */}
           <button
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary-500 px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-primary-600 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-emerald-700 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60"
             type="submit"
             disabled={isSubmitting}
           >
-            {isSubmitting ? (
-              <>
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                Saving log...
-              </>
-            ) : (
-              <>
-                <Plus size={18} strokeWidth={2.5} />
-                Save waste log
-              </>
-            )}
-          </button>
-        </form>
-      </section>
+          {isSubmitting ? (
+            <>
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+              Saving log...
+            </>
+          ) : (
+            <>
+              <Plus size={18} strokeWidth={2.5} />
+              Save waste log
+            </>
+          )}
+        </button>
+      </form>
+    </section>
 
       {/* History Section */}
-      <section className="rounded-2xl border border-neutral-200 dark:border-dark-border bg-white dark:bg-dark-card p-6 shadow-sm">
+      <section className="rounded-2xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-card p-6 shadow-sm">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-xl font-bold text-deep-500 dark:text-dark-text-heading">Your waste history</h2>
-            <p className="mt-1 text-sm text-neutral-500 dark:text-dark-text-muted">
+            <h2 className="text-xl font-bold text-slate-900 dark:text-dark-text-heading">Your waste history</h2>
+            <p className="mt-1 text-sm text-slate-500 dark:text-dark-text-muted">
               Review each entry contributing to your recycling score.
             </p>
           </div>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-neutral-100 dark:bg-dark-surface px-3 py-1.5 text-xs font-semibold text-neutral-700 dark:text-dark-text">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 dark:bg-dark-surface px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-dark-text">
             {logs.length} total logs
           </span>
         </div>
 
         <div className="mt-6">
           {loading ? (
-            <div className="flex items-center justify-center rounded-xl border border-dashed border-neutral-300 dark:border-dark-border bg-neutral-50 dark:bg-dark-surface py-12">
+            <div className="flex items-center justify-center rounded-xl border border-dashed border-slate-300 dark:border-dark-border bg-slate-50 dark:bg-dark-surface py-12">
               <div className="flex flex-col items-center gap-3">
-                <div className="h-8 w-8 animate-spin rounded-full border-3 border-neutral-200 dark:border-dark-border border-t-neutral-400 dark:border-t-dark-text-muted" />
-                <p className="text-sm font-medium text-neutral-500 dark:text-dark-text-muted">Loading your waste history...</p>
+                <div className="h-8 w-8 animate-spin rounded-full border-3 border-slate-200 dark:border-dark-border border-t-slate-400 dark:border-t-dark-text-muted" />
+                <p className="text-sm font-medium text-slate-500 dark:text-dark-text-muted">Loading your waste history...</p>
               </div>
             </div>
           ) : (

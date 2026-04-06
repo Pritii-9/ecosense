@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { LayoutDashboard, Leaf, Trophy, Map, LogOut, Bell, Sun, Moon, Users, Plus, User, UserCog, LogOut as LeaveOrg, Check, X } from 'lucide-react';
+import { LayoutDashboard, Leaf, Trophy, Map, LogOut, Sun, Moon, Users, Plus, UserCog, LogOut as LeaveOrg, Check, X, MessageSquare } from 'lucide-react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useTheme } from '../context/ThemeContext';
 import { api, getApiErrorMessage } from '../lib/api';
-
-const currentYear = new Date().getFullYear();
+import { NotificationDropdown } from './NotificationDropdown';
+import { Footer } from './Footer';
 
 export const Layout = () => {
   const { logout, user, setUser } = useAuth();
@@ -59,6 +59,7 @@ export const Layout = () => {
     { label: 'Leaderboard', path: '/leaderboard', icon: Trophy },
     { label: 'Map', path: '/map', icon: Map },
     { label: 'Team', path: '/team', icon: Users },
+    { label: 'Contact', path: '/contact', icon: MessageSquare },
   ];
 
 
@@ -122,11 +123,8 @@ export const Layout = () => {
                Log Activity
              </NavLink>
 
-             {/* Notification Bell */}
-            <button className="relative p-2.5 text-slate-500 dark:text-dark-text-muted hover:text-slate-700 dark:hover:text-dark-text-heading hover:bg-slate-100 dark:hover:bg-dark-card rounded-xl transition-all duration-200">
-              <Bell size={18} />
-              <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-red-500 rounded-full ring-2 ring-white dark:ring-dark-surface" />
-            </button>
+             {/* Notification Dropdown */}
+            <NotificationDropdown />
             
             {/* Theme Toggle */}
             <button 
@@ -160,11 +158,20 @@ export const Layout = () => {
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setProfileOpen(false)} />
                   <div className="absolute right-0 mt-2 w-72 rounded-xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-card shadow-xl z-50 overflow-hidden">
-                    {/* User Info */}
-                    <div className="px-4 py-3 border-b border-slate-200 dark:border-dark-border">
-                      <p className="text-sm font-semibold text-slate-900 dark:text-dark-text-heading">{user?.name}</p>
-                      <p className="text-xs text-slate-500 dark:text-dark-text-muted truncate">{user?.email}</p>
-                      <p className="text-xs font-medium text-emerald-600 dark:text-emerald-400 mt-1">{user?.total_points?.toLocaleString()} Points</p>
+                    {/* Header with User Info and Close Button */}
+                    <div className="flex items-start justify-between border-b border-slate-200 dark:border-dark-border px-4 py-3">
+                      <div>
+                        <p className="text-sm font-semibold text-slate-900 dark:text-dark-text-heading">{user?.name}</p>
+                        <p className="text-xs text-slate-500 dark:text-dark-text-muted truncate">{user?.email}</p>
+                        <p className="text-xs font-medium text-emerald-600 dark:text-emerald-400 mt-1">{user?.total_points?.toLocaleString()} Points</p>
+                      </div>
+                      <button
+                        onClick={() => setProfileOpen(false)}
+                        className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-dark-text-heading rounded-lg hover:bg-slate-100 dark:hover:bg-dark-surface transition-colors flex-shrink-0"
+                        aria-label="Close profile menu"
+                      >
+                        <X size={16} />
+                      </button>
                     </div>
 
                     {/* Menu Items */}
@@ -242,8 +249,10 @@ export const Layout = () => {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 w-full max-w-[1440px] mx-auto px-6 lg:px-12 py-8 animate-in fade-in duration-1000">
-        <Outlet />
+      <main className="flex-1 w-full bg-brand-surface dark:bg-dark-bg transition-colors duration-300">
+        <div className="mx-auto max-w-[1440px] px-6 lg:px-12 py-8 animate-in fade-in duration-1000">
+          <Outlet />
+        </div>
       </main>
 
       {/* Success Toast */}
@@ -286,36 +295,8 @@ export const Layout = () => {
         </div>
       )}
 
-      {/* Professional Footer */}
-      <footer className="border-t border-slate-200 dark:border-dark-border bg-white dark:bg-dark-surface transition-colors duration-300">
-        <div className="mx-auto max-w-[1440px] px-6 lg:px-12 py-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            {/* Brand */}
-            <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-700 text-white shadow-sm">
-                <Leaf size={16} fill="currentColor" />
-              </div>
-              <div>
-                <span className="text-sm font-bold text-slate-900 dark:text-dark-text-heading">EcoSense</span>
-                <p className="text-xs text-slate-500 dark:text-dark-text-muted">&copy; {currentYear} All rights reserved.</p>
-              </div>
-            </div>
-
-            {/* Essential Links */}
-            <div className="flex items-center gap-6">
-              <NavLink to="/dashboard" className="text-sm text-slate-500 dark:text-dark-text-muted hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
-                Dashboard
-              </NavLink>
-              <NavLink to="/impact" className="text-sm text-slate-500 dark:text-dark-text-muted hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
-                Impact
-              </NavLink>
-              <a href="mailto:support@ecosense.com" className="text-sm text-slate-500 dark:text-dark-text-muted hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
-                Support
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };

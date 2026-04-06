@@ -283,11 +283,11 @@ export const EnterpriseTabs = ({ recentLogs }: EnterpriseTabsProps) => {
           {/* Total Org Impact Counters */}
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="glass-card rounded-2xl p-8 animate-pulse">
+              <div className="rounded-2xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-card p-8 animate-pulse">
                 <div className="h-4 w-32 rounded bg-slate-200 dark:bg-dark-surface mb-4" />
                 <div className="h-12 w-48 rounded bg-slate-200 dark:bg-dark-surface" />
               </div>
-              <div className="glass-card rounded-2xl p-8 animate-pulse">
+              <div className="rounded-2xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-card p-8 animate-pulse">
                 <div className="h-4 w-32 rounded bg-slate-200 dark:bg-dark-surface mb-4" />
                 <div className="h-12 w-48 rounded bg-slate-200 dark:bg-dark-surface" />
               </div>
@@ -295,9 +295,9 @@ export const EnterpriseTabs = ({ recentLogs }: EnterpriseTabsProps) => {
           ) : orgStats ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Total Points Card */}
-              <div className="glass-card rounded-2xl p-8 transition-all duration-300 hover:shadow-lg">
+              <div className="rounded-2xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-card p-8 shadow-sm transition-all duration-300 hover:shadow-lg">
                 <div className="flex items-center gap-2 mb-2">
-                  <Users size={16} className="text-emerald-500" />
+                  <Users size={16} className="text-emerald-500 dark:text-emerald-400" />
                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-dark-text-muted">
                     Total Org Points
                   </p>
@@ -311,9 +311,9 @@ export const EnterpriseTabs = ({ recentLogs }: EnterpriseTabsProps) => {
               </div>
 
               {/* Total KG Recycled Card */}
-              <div className="glass-card rounded-2xl p-8 transition-all duration-300 hover:shadow-lg">
+              <div className="rounded-2xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-card p-8 shadow-sm transition-all duration-300 hover:shadow-lg">
                 <div className="flex items-center gap-2 mb-2">
-                  <Recycle size={16} className="text-emerald-500" />
+                  <Recycle size={16} className="text-emerald-500 dark:text-emerald-400" />
                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-dark-text-muted">
                     Total Recycled
                   </p>
@@ -330,7 +330,7 @@ export const EnterpriseTabs = ({ recentLogs }: EnterpriseTabsProps) => {
 
           {/* Horizontal Bar Chart - Top Performing Departments */}
           {orgStats && (
-            <div className="glass-card rounded-2xl p-8">
+            <div className="rounded-2xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-card p-8 shadow-sm">
               <div className="flex items-center justify-between mb-8">
                 <div>
                   <h3 className="text-lg font-black text-slate-900 dark:text-dark-text-heading uppercase tracking-tight">
@@ -391,20 +391,20 @@ export const EnterpriseTabs = ({ recentLogs }: EnterpriseTabsProps) => {
       {activeTab === 'organization' && hasOrg && (
         <div className="space-y-8">
           {/* Organization Info */}
-          <div className="glass-card rounded-2xl p-8">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 dark:bg-emerald-900/30">
-                <Building2 size={20} className="text-emerald-600 dark:text-emerald-400" />
+            <div className="rounded-2xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-card p-8 shadow-sm">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 dark:bg-emerald-900/30">
+                  <Building2 size={20} className="text-emerald-600 dark:text-emerald-400" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-black text-slate-900 dark:text-dark-text-heading uppercase tracking-tight">
+                    Your Organization
+                  </h2>
+                  <p className="text-xs font-bold text-slate-500 dark:text-dark-text-muted">
+                    Manage members and invitations
+                  </p>
+                </div>
               </div>
-              <div>
-                <h2 className="text-lg font-black text-slate-900 dark:text-dark-text-heading uppercase tracking-tight">
-                  Your Organization
-                </h2>
-                <p className="text-xs font-bold text-slate-500 dark:text-dark-text-muted">
-                  Manage members and invitations
-                </p>
-              </div>
-            </div>
 
             {/* Success/Error Messages */}
             {inviteMessage && (
@@ -502,7 +502,7 @@ export const EnterpriseTabs = ({ recentLogs }: EnterpriseTabsProps) => {
 
           {/* Team Members List */}
           {teamMembers.length > 0 && (
-            <div className="glass-card rounded-2xl p-8">
+            <div className="rounded-2xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-card p-8 shadow-sm">
               <h3 className="text-sm font-black text-slate-900 dark:text-dark-text-heading uppercase tracking-wider mb-4 flex items-center gap-2">
                 <Users size={16} className="text-emerald-500" />
                 Team Members ({teamMembers.length})
@@ -537,7 +537,7 @@ export const EnterpriseTabs = ({ recentLogs }: EnterpriseTabsProps) => {
 
           {/* Pending Invitations */}
           {pendingInvites.length > 0 && (
-            <div className="glass-card rounded-2xl p-8">
+            <div className="rounded-2xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-card p-8 shadow-sm">
               <h3 className="text-sm font-black text-slate-900 dark:text-dark-text-heading uppercase tracking-wider mb-4 flex items-center gap-2">
                 <Mail size={16} className="text-amber-500" />
                 Pending Invitations ({pendingInvites.length})

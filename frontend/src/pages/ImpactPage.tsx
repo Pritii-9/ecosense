@@ -13,9 +13,6 @@ const WASTE_TYPE_ICONS: Record<string, ForwardRefExoticComponent<Omit<LucideProp
   Metal: Recycle,
 }
 
-// Unified color for all waste type bars - use primary green
-const WASTE_TYPE_BAR_COLOR = 'from-primary-500 to-primary-400'
-
 const timeFilterOptions = [
   { value: 'today' as const, label: 'Today' },
   { value: 'this_week' as const, label: 'This Week' },
@@ -84,8 +81,8 @@ export const ImpactPage = () => {
     return (
       <div className="flex items-center justify-center py-20">
         <div className="flex flex-col items-center gap-4">
-          <div className="h-12 w-12 animate-spin rounded-full border-4 border-primary-200 dark:border-primary-800 border-t-primary-500" />
-          <p className="text-sm font-medium text-neutral-500 dark:text-dark-text-muted">Loading impact data...</p>
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-emerald-200 dark:border-emerald-800 border-t-emerald-500" />
+          <p className="text-sm font-medium text-slate-500 dark:text-dark-text-muted">Loading impact data...</p>
         </div>
       </div>
     )
@@ -96,21 +93,21 @@ export const ImpactPage = () => {
       {/* Header Section */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-deep-500 dark:text-dark-text-heading sm:text-3xl">
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-dark-text-heading sm:text-3xl">
             Your Environmental Impact
           </h1>
-          <p className="mt-1 text-sm text-neutral-500 dark:text-dark-text-muted">
+          <p className="mt-1 text-sm text-slate-500 dark:text-dark-text-muted">
             Track your contribution to a sustainable future
           </p>
         </div>
         <div className="flex items-center gap-3">
           {/* Connection Status */}
-          <div className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium ${isConnected ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-500' : 'bg-neutral-100 dark:bg-dark-surface text-neutral-500 dark:text-dark-text-muted'}`}>
-            <span className={`h-2 w-2 rounded-full ${isConnected ? 'bg-primary-500 animate-pulse' : 'bg-neutral-400 dark:bg-dark-text-muted'}`} />
+          <div className={`flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium ${isConnected ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400' : 'bg-slate-100 dark:bg-dark-surface text-slate-500 dark:text-dark-text-muted'}`}>
+            <span className={`h-2 w-2 rounded-full ${isConnected ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400 dark:bg-dark-text-muted'}`} />
             {isConnected ? 'Live' : 'Connecting...'}
           </div>
           {/* Time Filter */}
-          <div className="flex rounded-xl border border-neutral-200 dark:border-dark-border bg-white dark:bg-dark-card p-1 shadow-sm">
+          <div className="flex rounded-xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-card p-1 shadow-sm">
             {timeFilterOptions.map((option) => (
               <button
                 key={option.value}
@@ -118,8 +115,8 @@ export const ImpactPage = () => {
                 onClick={() => setTimeFilter(option.value)}
                 className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
                   timeFilter === option.value
-                    ? 'bg-primary-500 text-white shadow-sm'
-                    : 'text-neutral-600 dark:text-dark-text-muted hover:bg-neutral-100 dark:hover:bg-dark-surface'
+                    ? 'bg-emerald-500 text-white shadow-sm'
+                    : 'text-slate-600 dark:text-dark-text-muted hover:bg-slate-100 dark:hover:bg-dark-surface'
                 }`}
               >
                 {option.label}
@@ -160,14 +157,14 @@ export const ImpactPage = () => {
       {/* Main Content Grid */}
       <section className="grid gap-6 lg:grid-cols-2">
         {/* Waste Type Breakdown */}
-        <article className="rounded-2xl border border-neutral-200 dark:border-dark-border bg-white dark:bg-dark-card p-6 shadow-sm">
+        <article className="rounded-2xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-card p-6 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-50 dark:bg-primary-900/30 text-primary-500">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
               <BarChart3 size={20} />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-deep-500 dark:text-dark-text-heading">Waste Type Breakdown</h2>
-              <p className="text-xs text-neutral-500 dark:text-dark-text-muted">By material category</p>
+              <h2 className="text-lg font-bold text-slate-900 dark:text-dark-text-heading">Waste Type Breakdown</h2>
+              <p className="text-xs text-slate-500 dark:text-dark-text-muted">By material category</p>
             </div>
           </div>
           <div className="mt-5 space-y-4">
@@ -178,40 +175,40 @@ export const ImpactPage = () => {
                   <div key={type} className="group">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <IconComponent size={16} className="text-primary-500" />
-                        <span className="text-sm font-semibold text-deep-500 dark:text-dark-text-heading">{type}</span>
+                        <IconComponent size={16} className="text-emerald-500 dark:text-emerald-400" />
+                        <span className="text-sm font-semibold text-slate-900 dark:text-dark-text-heading">{type}</span>
                       </div>
-                      <span className="text-sm font-medium text-neutral-600 dark:text-dark-text">{data.quantity} kg</span>
+                      <span className="text-sm font-medium text-slate-700 dark:text-dark-text">{data.quantity} kg</span>
                     </div>
-                    <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-neutral-100 dark:bg-dark-surface">
+                    <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-slate-100 dark:bg-dark-surface">
                       <div
-                        className={`h-full rounded-full bg-gradient-to-r ${WASTE_TYPE_BAR_COLOR} transition-all duration-700 ease-out`}
+                        className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all duration-700 ease-out"
                         style={{ width: `${(data.quantity / maxQuantity) * 100}%` }}
                       />
                     </div>
-                    <p className="mt-1 text-xs text-neutral-500 dark:text-dark-text-muted">CO₂ saved: {data.co2_saved_kg} kg</p>
+                    <p className="mt-1 text-xs text-slate-500 dark:text-dark-text-muted">CO₂ saved: {data.co2_saved_kg} kg</p>
                   </div>
                 )
               })
             ) : (
-              <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-neutral-300 dark:border-dark-border bg-neutral-50 dark:bg-dark-surface py-10">
-                <BarChart3 size={32} className="text-neutral-400 dark:text-dark-text-muted" />
-                <p className="mt-2 text-sm font-medium text-neutral-500 dark:text-dark-text-muted">No waste data yet</p>
-                <p className="text-xs text-neutral-400 dark:text-dark-text-muted">Start logging to see your impact!</p>
+              <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 dark:border-dark-border bg-slate-50 dark:bg-dark-surface py-10">
+                <BarChart3 size={32} className="text-slate-400 dark:text-dark-text-muted" />
+                <p className="mt-2 text-sm font-medium text-slate-500 dark:text-dark-text-muted">No waste data yet</p>
+                <p className="text-xs text-slate-400 dark:text-dark-text-muted">Start logging to see your impact!</p>
               </div>
             )}
           </div>
         </article>
 
         {/* Community Stats */}
-        <article className="rounded-2xl border border-neutral-200 dark:border-dark-border bg-white dark:bg-dark-card p-6 shadow-sm">
+        <article className="rounded-2xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-card p-6 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-50 dark:bg-primary-900/30 text-primary-500">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
               <Users size={20} />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-deep-500 dark:text-dark-text-heading">Community Stats</h2>
-              <p className="text-xs text-neutral-500 dark:text-dark-text-muted">Collective environmental impact</p>
+              <h2 className="text-lg font-bold text-slate-900 dark:text-dark-text-heading">Community Stats</h2>
+              <p className="text-xs text-slate-500 dark:text-dark-text-muted">Collective environmental impact</p>
             </div>
           </div>
           <div className="mt-5 space-y-3">
@@ -224,15 +221,15 @@ export const ImpactPage = () => {
       </section>
 
       {/* Live Activity Feed */}
-      <article className="rounded-2xl border border-neutral-200 dark:border-dark-border bg-white dark:bg-dark-card p-6 shadow-sm">
+      <article className="rounded-2xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-card p-6 shadow-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-50 dark:bg-primary-900/30 text-primary-500">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
               <Zap size={20} />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-deep-500 dark:text-dark-text-heading">Live Activity Feed</h2>
-              <p className="text-xs text-neutral-500 dark:text-dark-text-muted">Real-time community recycling updates</p>
+              <h2 className="text-lg font-bold text-slate-900 dark:text-dark-text-heading">Live Activity Feed</h2>
+              <p className="text-xs text-slate-500 dark:text-dark-text-muted">Real-time community recycling updates</p>
             </div>
           </div>
         </div>
@@ -245,24 +242,24 @@ export const ImpactPage = () => {
                   key={index}
                   className={`group flex items-center gap-4 rounded-xl border px-4 py-3 transition-all duration-200 hover:shadow-md ${
                     index === 0
-                      ? 'border-primary-200 dark:border-primary-800 bg-primary-50 dark:bg-primary-900/20 shadow-sm'
-                      : 'border-neutral-200 dark:border-dark-border bg-white dark:bg-dark-surface hover:border-primary-200 dark:hover:border-primary-800'
+                      ? 'border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/20 shadow-sm'
+                      : 'border-slate-200 dark:border-dark-border bg-white dark:bg-dark-surface hover:border-emerald-200 dark:hover:border-emerald-800'
                   }`}
                 >
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-50 dark:bg-primary-900/30 text-primary-500 transition-transform duration-200 group-hover:scale-105">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 transition-transform duration-200 group-hover:scale-105">
                     <IconComponent size={20} />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm text-neutral-700 dark:text-dark-text">
-                      <span className="font-semibold text-primary-500">{item.user_name}</span>
+                    <p className="text-sm text-slate-700 dark:text-dark-text">
+                      <span className="font-semibold text-emerald-600 dark:text-emerald-400">{item.user_name}</span>
                       {' '}recycled{' '}
-                      <strong className="font-bold text-deep-500 dark:text-dark-text-heading">{item.quantity} kg</strong>
+                      <strong className="font-bold text-slate-900 dark:text-dark-text-heading">{item.quantity} kg</strong>
                       {' '}of {item.type}
                     </p>
-                    <p className="mt-0.5 text-xs text-neutral-500 dark:text-dark-text-muted">+{item.points} recycling points earned</p>
+                    <p className="mt-0.5 text-xs text-slate-500 dark:text-dark-text-muted">+{item.points} recycling points earned</p>
                   </div>
                   <div className="shrink-0">
-                    <span className="inline-flex items-center rounded-full bg-neutral-100 dark:bg-dark-surface px-2.5 py-1 text-xs font-medium text-neutral-600 dark:text-dark-text">
+                    <span className="inline-flex items-center rounded-full bg-slate-100 dark:bg-dark-surface px-2.5 py-1 text-xs font-medium text-slate-600 dark:text-dark-text">
                       {item.time_ago}
                     </span>
                   </div>
@@ -271,11 +268,11 @@ export const ImpactPage = () => {
             })
           ) : (
             <div className="flex flex-col items-center justify-center py-12">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-neutral-100 dark:bg-dark-surface text-neutral-400 dark:text-dark-text-muted">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 dark:bg-dark-surface text-slate-400 dark:text-dark-text-muted">
                 <Recycle size={32} />
               </div>
-              <p className="mt-3 text-sm font-medium text-neutral-600 dark:text-dark-text-muted">No activity yet</p>
-              <p className="text-xs text-neutral-400 dark:text-dark-text-muted">Be the first to log some waste!</p>
+              <p className="mt-3 text-sm font-medium text-slate-600 dark:text-dark-text-muted">No activity yet</p>
+              <p className="text-xs text-slate-400 dark:text-dark-text-muted">Be the first to log some waste!</p>
             </div>
           )}
         </div>
@@ -286,15 +283,15 @@ export const ImpactPage = () => {
 
 function ImpactStatCard({ icon: Icon, label, value, subtitle }: { icon: ForwardRefExoticComponent<Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>>; label: string; value: string; subtitle: string }) {
   return (
-    <article className="group relative overflow-hidden rounded-2xl border border-neutral-200 dark:border-dark-border bg-white dark:bg-dark-card p-5 shadow-sm transition-all duration-300 hover:shadow-md hover:border-neutral-300 dark:hover:border-dark-text-muted">
+    <article className="group relative overflow-hidden rounded-2xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-card p-5 shadow-sm transition-all duration-300 hover:shadow-md hover:border-slate-300 dark:hover:border-dark-text-muted">
       <div className="flex items-start gap-4">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary-50 dark:bg-primary-900/30 text-primary-500">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
           <Icon size={22} strokeWidth={2} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-dark-text-muted">{label}</p>
-          <p className="mt-1 text-2xl font-bold tracking-tight text-deep-500 dark:text-dark-text-heading">{value}</p>
-          <p className="mt-0.5 text-xs text-neutral-500 dark:text-dark-text-muted">{subtitle}</p>
+          <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-dark-text-muted">{label}</p>
+          <p className="mt-1 text-2xl font-bold tracking-tight text-slate-900 dark:text-dark-text-heading">{value}</p>
+          <p className="mt-0.5 text-xs text-slate-500 dark:text-dark-text-muted">{subtitle}</p>
         </div>
       </div>
     </article>
@@ -303,9 +300,9 @@ function ImpactStatCard({ icon: Icon, label, value, subtitle }: { icon: ForwardR
 
 function CommunityStatRow({ label, value, accent }: { label: string; value: string | number; accent?: 'success' }) {
   return (
-    <div className="flex items-center justify-between rounded-xl bg-neutral-50 dark:bg-dark-surface px-4 py-3 transition-colors hover:bg-neutral-100 dark:hover:bg-dark-bg">
-      <span className="text-sm text-neutral-600 dark:text-dark-text">{label}</span>
-      <span className={`text-lg font-bold ${accent === 'success' ? 'text-primary-500' : 'text-deep-500 dark:text-dark-text-heading'}`}>{value}</span>
+    <div className="flex items-center justify-between rounded-xl bg-slate-50 dark:bg-dark-surface px-4 py-3 transition-colors hover:bg-slate-100 dark:hover:bg-dark-bg">
+      <span className="text-sm text-slate-600 dark:text-dark-text">{label}</span>
+      <span className={`text-lg font-bold ${accent === 'success' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-900 dark:text-dark-text-heading'}`}>{value}</span>
     </div>
   )
 }
