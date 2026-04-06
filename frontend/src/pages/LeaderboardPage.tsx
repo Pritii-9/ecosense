@@ -108,8 +108,8 @@ export const LeaderboardPage = () => {
 
                   {/* User Info */}
                   <div className="mt-4 text-center">
-                    <h3 className="text-lg font-bold text-deep-500 dark:text-dark-text-heading truncate">{leader.name}</h3>
-                    <p className="mt-1 text-xs text-neutral-500 dark:text-dark-text-muted truncate">{leader.email}</p>
+                    <h3 className="text-lg font-bold text-deep-500 dark:text-dark-text-heading truncate">{leader.username || leader.name}</h3>
+                    <p className="mt-1 text-xs text-neutral-500 dark:text-dark-text-muted truncate">@{leader.username || 'anonymous'}</p>
                   </div>
 
                   {/* Points */}
@@ -145,17 +145,17 @@ export const LeaderboardPage = () => {
                       </span>
                       <span className="ml-1 text-sm font-bold text-neutral-600 dark:text-dark-text">{leader.rank}</span>
                     </div>
-                    <div className="col-span-5">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-500 text-sm font-semibold text-white">
-                          {leader.name.charAt(0).toUpperCase()}
-                        </div>
-                        <div className="min-w-0">
-                          <p className="text-sm font-semibold text-deep-500 dark:text-dark-text-heading truncate">{leader.name}</p>
-                          <p className="text-xs text-neutral-500 dark:text-dark-text-muted truncate">{leader.email}</p>
-                        </div>
-                      </div>
-                    </div>
+                     <div className="col-span-5">
+                       <div className="flex items-center gap-3">
+                         <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-500 text-sm font-semibold text-white">
+                           {(leader.username || leader.name).charAt(0).toUpperCase()}
+                         </div>
+                         <div className="min-w-0">
+                           <p className="text-sm font-semibold text-deep-500 dark:text-dark-text-heading truncate">{leader.username || leader.name}</p>
+                           <p className="text-xs text-neutral-500 dark:text-dark-text-muted truncate">@{leader.username || 'anonymous'}</p>
+                         </div>
+                       </div>
+                     </div>
                     <div className="col-span-6 text-right">
                       <span className="inline-flex items-center rounded-full bg-primary-50 dark:bg-primary-900/20 px-3 py-1 text-sm font-bold text-primary-500">
                         {leader.total_points} pts

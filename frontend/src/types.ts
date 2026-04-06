@@ -1,6 +1,7 @@
 export interface User {
   id: string
   name: string
+  username?: string
   email: string
   email_verified: boolean
   total_points: number
@@ -32,8 +33,11 @@ export interface LeaderboardEntry {
   rank: number
   id: string
   name: string
-  email: string
+  username?: string
+  email?: string
   total_points: number
+  org_id?: string
+  department?: string
 }
 
 export interface RecyclingCenter {

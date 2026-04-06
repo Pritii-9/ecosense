@@ -20,7 +20,7 @@ export const RegisterPage = () => {
   const navigate = useNavigate()
   const { login } = useAuth()
   const [step, setStep] = useState<'details' | 'verify'>('details')
-  const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '', code: '' })
+  const [form, setForm] = useState({ name: '', email: '', username: '', password: '', confirmPassword: '', code: '' })
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -59,6 +59,7 @@ export const RegisterPage = () => {
   const handleRegister = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const nextErrors = {
+      username: form.username && form.username.length >= 3 && form.username.length <= 20 ? '' : 'Username must be 3-20 characters.',
       code: validateVerificationCode(form.code),
       password: validatePassword(form.password),
       confirmPassword: validatePasswordConfirmation(form.password, form.confirmPassword),
@@ -67,7 +68,7 @@ export const RegisterPage = () => {
     setError('')
     setMessage('')
 
-    if (nextErrors.code || nextErrors.password || nextErrors.confirmPassword) {
+    if (nextErrors.username || nextErrors.code || nextErrors.password || nextErrors.confirmPassword) {
       return
     }
 
@@ -77,6 +78,7 @@ export const RegisterPage = () => {
       const response = await api.post<AuthResponse>('/auth/register', {
         name: form.name,
         email: form.email,
+        username: form.username,
         password: form.password,
         code: form.code,
       })
@@ -239,6 +241,25 @@ export const RegisterPage = () => {
                     aria-label="Email address"
                   />
                 </div>
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-dark-text">Username</label>
+                <div className="relative">
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 dark:text-dark-text-muted">
+                    <User size={18} />
+                  </div>
+                  <input
+                    className="flex h-12 w-full rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-surface pl-10 pr-4 text-sm text-slate-900 dark:text-dark-text shadow-sm transition-all placeholder:text-slate-400 dark:placeholder:text-dark-text-muted focus:border-emerald-500 focus:bg-white dark:focus:bg-dark-bg focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                    type="text"
+                    placeholder="Choose a unique username"
+                    value={form.username}
+                    onChange={(event) => setForm((current) => ({ ...current, username: event.target.value.toLowerCase().replace(/[^a-z0-9_]/g, '') }))}
+                    maxLength={20}
+                    required
+                  />
+                </div>
+                <p className="mt-1 text-xs text-slate-400 dark:text-dark-text-muted">Letters, numbers, and underscores only. 3-20 characters.</p>
               </div>
 
               <div>

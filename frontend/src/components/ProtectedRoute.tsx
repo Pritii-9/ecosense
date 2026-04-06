@@ -3,7 +3,7 @@ import { Navigate, Outlet } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 
 export const ProtectedRoute = () => {
-  const { authReady, token } = useAuth()
+  const { authReady, token, user } = useAuth()
 
   if (!authReady) {
     return (
@@ -17,6 +17,11 @@ export const ProtectedRoute = () => {
 
   if (!token) {
     return <Navigate to="/login" replace />
+  }
+
+  // Redirect to username setup if user hasn't set a username yet
+  if (user && !user.username) {
+    return <Navigate to="/setup-username" replace />
   }
 
   return <Outlet />

@@ -4,7 +4,7 @@ import { Navigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 
 export const PublicRoute = ({ children }: { children: ReactElement }) => {
-  const { authReady, token } = useAuth()
+  const { authReady, token, user } = useAuth()
 
   if (!authReady) {
     return (
@@ -17,6 +17,10 @@ export const PublicRoute = ({ children }: { children: ReactElement }) => {
   }
 
   if (token) {
+    // If user has a token but no username, redirect to setup
+    if (user && !user.username) {
+      return <Navigate to="/setup-username" replace />
+    }
     return <Navigate to="/dashboard" replace />
   }
 

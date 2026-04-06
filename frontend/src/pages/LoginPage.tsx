@@ -1,7 +1,7 @@
 import type { FormEvent } from 'react'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Leaf, Mail, ArrowRight } from 'lucide-react'
+import { Leaf, User, ArrowRight } from 'lucide-react'
 
 import { AuthPageShell } from '../components/AuthPageShell'
 import { PasswordField } from '../components/PasswordField'
@@ -12,7 +12,7 @@ import type { AuthResponse } from '../types'
 export const LoginPage = () => {
   const navigate = useNavigate()
   const { login } = useAuth()
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -21,21 +21,21 @@ export const LoginPage = () => {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const nextErrors = {
-      email: email ? '' : 'Email is required.',
+      username: username ? '' : 'Username or email is required.',
       password: password ? '' : 'Password is required.',
     }
 
     setErrors(nextErrors)
     setError('')
 
-    if (nextErrors.email || nextErrors.password) {
+    if (nextErrors.username || nextErrors.password) {
       return
     }
 
     setIsSubmitting(true)
 
     try {
-      const response = await api.post<AuthResponse>('/auth/login', { email, password })
+      const response = await api.post<AuthResponse>('/auth/login', { identifier: username, password })
       login(response.data.token, response.data.user)
       navigate('/dashboard')
     } catch (submitError) {
@@ -64,24 +64,24 @@ export const LoginPage = () => {
         {/* Card Container */}
         <div className="rounded-2xl border border-slate-200 dark:border-dark-border bg-white dark:bg-dark-card p-6 shadow-lg sm:p-8">
           <form className="space-y-5" onSubmit={handleSubmit}>
-            {/* Email */}
+            {/* Username or Email */}
             <div>
-              <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-dark-text">Email address</label>
+              <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-dark-text">Username or Email</label>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 dark:text-dark-text-muted">
-                  <Mail size={18} />
+                  <User size={18} />
                 </div>
                 <input
                   className="flex h-12 w-full rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-surface pl-10 pr-4 text-sm text-slate-900 dark:text-dark-text shadow-sm transition-all placeholder:text-slate-400 dark:placeholder:text-dark-text-muted focus:border-emerald-500 focus:bg-white dark:focus:bg-dark-bg focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  onBlur={() => setErrors((current) => ({ ...current, email: email ? '' : 'Email is required.' }))}
+                  type="text"
+                  placeholder="Enter your username or email"
+                  value={username}
+                  onChange={(event) => setUsername(event.target.value)}
+                  onBlur={() => setErrors((current) => ({ ...current, username: username ? '' : 'Username or email is required.' }))}
                   required
                 />
               </div>
-              {errors.email && <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">{errors.email}</p>}
+              {errors.username && <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">{errors.username}</p>}
             </div>
 
             {/* Password */}

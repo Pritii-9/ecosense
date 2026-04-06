@@ -5,6 +5,7 @@ def serialize_user(user: dict) -> dict:
     return {
         "id": str(user["_id"]),
         "name": user["name"],
+        "username": user.get("username"),
         "email": user["email"],
         "email_verified": user.get("email_verified", False),
         "total_points": user.get("total_points", 0),

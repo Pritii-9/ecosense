@@ -104,7 +104,7 @@ export const DashboardPage = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-4xl font-black text-slate-900 dark:text-dark-text-heading tracking-tight">
-            Welcome, <span className="text-brand-primary">{user?.name?.split(' ')[0]}</span>
+            Welcome, <span className="text-brand-primary">{user?.username || user?.name?.split(' ')[0]}</span>
           </h1>
           <p className="text-slate-500 dark:text-dark-text-muted font-medium mt-1">Metrics and impact overview for your workspace.</p>
         </div>

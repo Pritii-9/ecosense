@@ -28,10 +28,14 @@ def leaderboard():
 
 
 def _get_global_leaderboard():
-    """Global leaderboard showing top 10 users across all orgs."""
+    """Global leaderboard showing top 10 users across all orgs.
+    
+    Note: Email is NOT included in the global leaderboard for privacy.
+    Only username is displayed publicly.
+    """
     users = list(
         get_database()
-        .users.find({}, {"name": 1, "email": 1, "total_points": 1, "org_id": 1, "department": 1, "role": 1})
+        .users.find({}, {"name": 1, "username": 1, "total_points": 1, "org_id": 1, "department": 1, "role": 1})
         .sort("total_points", -1)
         .limit(10)
     )
@@ -41,7 +45,7 @@ def _get_global_leaderboard():
             "rank": index + 1,
             "id": str(user["_id"]),
             "name": user["name"],
-            "email": user["email"],
+            "username": user.get("username"),
             "total_points": user.get("total_points", 0),
             "org_id": user.get("org_id"),
             "department": user.get("department"),
@@ -70,6 +74,7 @@ def _get_department_leaderboard(org_id):
                     "$push": {
                         "id": {"$toString": "$_id"},
                         "name": "$name",
+                        "username": "$username",
                         "total_points": "$total_points",
                     }
                 },
@@ -133,7 +138,7 @@ def get_department_leaderboard():
 
     users = list(
         get_database()
-        .users.find(match_filter, {"name": 1, "email": 1, "total_points": 1, "department": 1})
+        .users.find(match_filter, {"name": 1, "username": 1, "email": 1, "total_points": 1, "department": 1})
         .sort("total_points", -1)
         .limit(50)
     )
@@ -143,6 +148,7 @@ def get_department_leaderboard():
             "rank": index + 1,
             "id": str(user["_id"]),
             "name": user["name"],
+            "username": user.get("username"),
             "email": user["email"],
             "total_points": user.get("total_points", 0),
             "department": user.get("department"),

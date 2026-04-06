@@ -46,7 +46,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           window.localStorage.setItem(storageKey, JSON.stringify({ token: session.token, user: freshUser }))
         })
         .catch(() => {
-          // If refresh fails, continue with cached user data
+          // If refresh fails (e.g., expired token), clear the session
+          window.localStorage.removeItem(storageKey)
+          setToken(null)
+          setUser(null)
+          setAuthToken(null)
         })
         .finally(() => {
           setAuthReady(true)

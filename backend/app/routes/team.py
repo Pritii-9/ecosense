@@ -202,13 +202,27 @@ def invite_members():
     }), status_code
 
 
+def _normalize_username(raw: object) -> str:
+    return str(raw or "").strip().lower()
+
+
+def _is_valid_username(username: str) -> bool:
+    """Username must be 3-20 chars, alphanumeric + underscores only."""
+    if len(username) < 3 or len(username) > 20:
+        return False
+    return all(c.isalnum() or c == '_' for c in username)
+
+
 @team_bp.post("/invite/accept")
 def accept_invite():
     """User accepts invitation with code and creates account."""
+    import bcrypt
+    
     payload = _read_json()
     email = _normalize_email(payload.get("email"))
     code = _normalize_code(payload.get("code"))
     name = str(payload.get("name", "")).strip()
+    username = _normalize_username(payload.get("username", ""))
     password = str(payload.get("password", ""))
 
     if not email or not name or not password:
@@ -217,8 +231,17 @@ def accept_invite():
     if not is_valid_email(email):
         return jsonify({"error": "Enter a valid email address."}), 400
 
+    if not username:
+        return jsonify({"error": "Username is required."}), 400
+
+    if not _is_valid_username(username):
+        return jsonify({"error": "Username must be 3-20 characters and contain only letters, numbers, and underscores."}), 400
+
     if get_database().users.find_one({"email": email}) is not None:
         return jsonify({"error": "An account with this email already exists."}), 409
+
+    if get_database().users.find_one({"username": username}) is not None:
+        return jsonify({"error": "This username is already taken. Please choose another."}), 409
 
     invitation = get_database().team_invitations.find_one({
         "email": email,
@@ -238,11 +261,11 @@ def accept_invite():
     if invitation.get("code") != code:
         return jsonify({"error": "Invalid invitation code."}), 400
 
-    import bcrypt
     password_hash = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
     user_document = {
         "name": name,
+        "username": username,
         "email": email,
         "password_hash": password_hash,
         "email_verified": True,

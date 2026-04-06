@@ -16,6 +16,7 @@ export const TeamLoginPage = () => {
   const [email, setEmail] = useState('')
   const [code, setCode] = useState('')
   const [name, setName] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -29,6 +30,7 @@ export const TeamLoginPage = () => {
       email: validateEmail(email),
       code: validateVerificationCode(code),
       name: validateFirstName(name),
+      username: username.length >= 3 && username.length <= 20 ? '' : 'Username must be 3-20 characters.',
       password: validatePassword(password),
       confirmPassword: validatePasswordConfirmation(password, confirmPassword),
     }
@@ -36,7 +38,7 @@ export const TeamLoginPage = () => {
     setErrors(nextErrors)
     setError('')
 
-    if (nextErrors.email || nextErrors.code || nextErrors.name || nextErrors.password || nextErrors.confirmPassword) {
+    if (nextErrors.email || nextErrors.code || nextErrors.name || nextErrors.username || nextErrors.password || nextErrors.confirmPassword) {
       return
     }
 
@@ -47,6 +49,7 @@ export const TeamLoginPage = () => {
         email,
         code,
         name,
+        username,
         password,
       })
       login(response.data.token, response.data.user)
@@ -95,6 +98,27 @@ export const TeamLoginPage = () => {
                 />
               </div>
               {errors.name && <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">{errors.name}</p>}
+            </div>
+
+            {/* Username */}
+            <div>
+              <label className="mb-2 block text-sm font-semibold text-slate-700 dark:text-dark-text">Username</label>
+              <div className="relative">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 dark:text-dark-text-muted">
+                  <User size={18} />
+                </div>
+                <input
+                  className="flex h-12 w-full rounded-xl border border-slate-200 dark:border-dark-border bg-slate-50 dark:bg-dark-surface pl-10 pr-4 text-sm text-slate-900 dark:text-dark-text shadow-sm transition-all placeholder:text-slate-400 dark:placeholder:text-dark-text-muted focus:border-emerald-500 focus:bg-white dark:focus:bg-dark-bg focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+                  type="text"
+                  placeholder="Choose a unique username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
+                  maxLength={20}
+                  required
+                />
+              </div>
+              {errors.username && <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">{errors.username}</p>}
+              <p className="mt-1 text-xs text-slate-400 dark:text-dark-text-muted">Letters, numbers, and underscores only. 3-20 characters.</p>
             </div>
 
             {/* Email */}

@@ -13,6 +13,17 @@ from app.utils.validation import is_valid_code, is_valid_email, is_valid_name, i
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
+
+def _normalize_username(raw: object) -> str:
+    return str(raw or "").strip().lower()
+
+
+def _is_valid_username(username: str) -> bool:
+    """Username must be 3-20 chars, alphanumeric + underscores only."""
+    if len(username) < 3 or len(username) > 20:
+        return False
+    return all(c.isalnum() or c == '_' for c in username)
+
 REGISTER_CODE_PURPOSE = "register"
 RESET_CODE_PURPOSE = "password_reset"
 
@@ -167,6 +178,7 @@ def register():
     org_id = _normalize_org_id(payload.get("org_id"))
     department = _normalize_department(payload.get("department"))
     role = _normalize_role(payload.get("role"))
+    username = _normalize_username(payload.get("username", ""))
 
     is_valid, error_response = _validate_name_email(name, email)
     if not is_valid:
@@ -181,6 +193,19 @@ def register():
 
     if get_database().users.find_one({"email": email}) is not None:
         return jsonify({"error": "An account with this email already exists."}), 409
+
+    # Validate username (required)
+    if not username:
+        return jsonify({"error": "Username is required."}), 400
+
+    if not _is_valid_username(username):
+        return jsonify({
+            "error": "Username must be 3-20 characters and contain only letters, numbers, and underscores."
+        }), 400
+
+    # Check username uniqueness
+    if get_database().users.find_one({"username": username}) is not None:
+        return jsonify({"error": "This username is already taken. Please choose another."}), 409
 
     code_is_valid, message, record = verify_code(email, REGISTER_CODE_PURPOSE, code)
     if not code_is_valid:
@@ -201,6 +226,9 @@ def register():
         "role": role,
         "created_at": datetime.now(UTC),
     }
+
+    # Add username (required)
+    user_document["username"] = username
 
     try:
         result = get_database().users.insert_one(user_document)
@@ -227,21 +255,28 @@ def register():
 @auth_bp.post("/login")
 def login():
     payload = _read_json()
-    email = _normalize_email(payload.get("email"))
+    identifier = str(payload.get("identifier", "")).strip().lower()
     password = _normalize_password(payload.get("password"))
 
-    if not email:
-        return jsonify({"error": "Email is required."}), 400
-
-    if not is_valid_email(email):
-        return jsonify({"error": "Enter a valid email address."}), 400
+    if not identifier:
+        return jsonify({"error": "Username or email is required."}), 400
 
     if not password:
         return jsonify({"error": "Password is required."}), 400
 
-    user = get_database().users.find_one({"email": email})
+    # Determine if identifier looks like an email (contains @)
+    is_email = "@" in identifier
+
+    # Build query based on identifier type
+    if is_email:
+        query = {"email": identifier}
+    else:
+        query = {"username": identifier}
+
+    user = get_database().users.find_one(query)
     if user is None:
-        return jsonify({"error": "No account was found for this email address."}), 404
+        field = "email" if is_email else "username"
+        return jsonify({"error": f"No account was found for this {field}."}), 404
 
     if user.get("email_verified") is False:
         return jsonify({"error": "Please verify your email before logging in."}), 403
@@ -352,6 +387,61 @@ def update_profile():
 
     updated_user = get_database().users.find_one({"_id": current_user["_id"]})
     return jsonify({"message": "Profile updated successfully.", "user": serialize_user(updated_user)}), 200
+
+
+@auth_bp.post("/username/set")
+@jwt_required
+def set_username():
+    """Set a unique username for the current user. Can only be done once."""
+    current_user = g.current_user
+
+    # Check if user already has a username
+    if current_user.get("username"):
+        return jsonify({"error": "Username already set. Contact support to change it."}), 409
+
+    payload = _read_json()
+    username = _normalize_username(payload.get("username", ""))
+
+    if not username:
+        return jsonify({"error": "Username is required."}), 400
+
+    if not _is_valid_username(username):
+        return jsonify({
+            "error": "Username must be 3-20 characters and contain only letters, numbers, and underscores."
+        }), 400
+
+    # Check if username is already taken
+    existing = get_database().users.find_one({"username": username})
+    if existing is not None:
+        return jsonify({"error": "This username is already taken. Please choose another."}), 409
+
+    # Set the username
+    get_database().users.update_one(
+        {"_id": current_user["_id"]},
+        {"$set": {"username": username}}
+    )
+
+    updated_user = get_database().users.find_one({"_id": current_user["_id"]})
+    return jsonify({"message": "Username set successfully.", "user": serialize_user(updated_user)}), 200
+
+
+@auth_bp.get("/username/check")
+@jwt_required
+def check_username():
+    """Check if a username is available."""
+    username = _normalize_username(request.args.get("username", ""))
+
+    if not username:
+        return jsonify({"error": "Username parameter is required."}), 400
+
+    if not _is_valid_username(username):
+        return jsonify({
+            "available": False,
+            "error": "Username must be 3-20 characters and contain only letters, numbers, and underscores."
+        }), 400
+
+    existing = get_database().users.find_one({"username": username})
+    return jsonify({"available": existing is None}), 200
 
 
 @auth_bp.post("/logout")
