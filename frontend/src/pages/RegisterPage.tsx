@@ -1,7 +1,8 @@
 import type { FormEvent } from 'react'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { ArrowRight, Mail, User, KeyRound, CheckCircle, Shield, Zap, Globe2, Leaf } from 'lucide-react'
+import { ArrowRight, Mail, User, KeyRound, CheckCircle, Shield, Zap, Globe2 } from 'lucide-react'
+import EcoSenseLogo from '/ecosense.svg'
 
 import { ThemeToggle } from '../components/ThemeToggle'
 import { PasswordField } from '../components/PasswordField'
@@ -129,8 +130,8 @@ export const RegisterPage = () => {
       {/* Top Bar */}
       <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-6 py-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 text-white shadow-lg shadow-emerald-500/25">
-            <Leaf size={20} fill="currentColor" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-lg shadow-emerald-500/25 overflow-hidden">
+            <img src={EcoSenseLogo} alt="EcoSense" className="h-7 w-7" />
           </div>
           <span className={`text-lg font-extrabold ${isDark ? 'text-white' : 'text-slate-900'}`}>EcoSense</span>
         </div>

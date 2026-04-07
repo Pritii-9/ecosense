@@ -1,4 +1,5 @@
 import { Leaf, Globe2, Users, TrendingUp, Recycle, Droplets, Wind } from 'lucide-react';
+import EcoSenseLogo from '/ecosense.svg';
 
 export const AuthHero = () => {
   const floatingIcons = [
@@ -42,8 +43,8 @@ export const AuthHero = () => {
       <div className="relative z-10 flex max-w-xl flex-col items-center text-center">
         {/* Animated Logo */}
         <div className="relative mb-10">
-          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-2xl shadow-emerald-500/30">
-            <Leaf size={36} className="text-white" fill="currentColor" />
+          <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-white shadow-2xl shadow-emerald-500/30 overflow-hidden">
+            <img src={EcoSenseLogo} alt="EcoSense" className="h-12 w-12" />
           </div>
           <div className="absolute -inset-2 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-600/20 blur-xl animate-pulse" />
         </div>

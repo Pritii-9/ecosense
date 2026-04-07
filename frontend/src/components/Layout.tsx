@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { LayoutDashboard, Leaf, Trophy, Map, LogOut, Sun, Moon, Users, Plus, UserCog, LogOut as LeaveOrg, Check, X, MessageSquare } from 'lucide-react';
+import EcoSenseLogo from '/ecosense.svg';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { useTheme } from '../context/ThemeContext';
@@ -72,8 +73,8 @@ export const Layout = () => {
           {/* Logo & Navigation */}
           <div className="flex items-center gap-10">
             <NavLink to="/dashboard" className="flex items-center gap-3 group">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 text-white shadow-lg shadow-emerald-500/25 transition-all duration-300 group-hover:shadow-emerald-500/40 group-hover:scale-105">
-                <Leaf size={20} fill="currentColor" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white dark:bg-dark-card shadow-lg transition-all duration-300 group-hover:shadow-emerald-500/40 group-hover:scale-105 overflow-hidden">
+                <img src={EcoSenseLogo} alt="EcoSense" className="h-7 w-7" />
               </div>
               <div className="flex flex-col">
                 <span className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-dark-text-heading leading-none">EcoSense</span>

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { ThemeToggle } from './ThemeToggle'
-import { Leaf } from 'lucide-react'
+import EcoSenseLogo from '/ecosense.svg'
 
 export const AuthPageShell = ({ children }: { children: ReactNode }) => {
   return (
@@ -16,8 +16,8 @@ export const AuthPageShell = ({ children }: { children: ReactNode }) => {
       <div className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between px-6 py-4">
         {/* Logo */}
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 text-white shadow-lg shadow-emerald-500/25">
-            <Leaf size={20} fill="currentColor" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-lg shadow-emerald-500/25 overflow-hidden">
+            <img src={EcoSenseLogo} alt="EcoSense" className="h-7 w-7" />
           </div>
           <span className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-dark-text-heading">EcoSense</span>
         </div>

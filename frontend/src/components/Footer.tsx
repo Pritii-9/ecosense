@@ -1,5 +1,6 @@
-import { Leaf, X, Mail, Heart } from 'lucide-react'
+import { X, Mail, Heart } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
+import EcoSenseLogo from '/ecosense.svg'
 
 const currentYear = new Date().getFullYear()
 
@@ -33,10 +34,10 @@ export const Footer = () => {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
           {/* Brand Column */}
           <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 text-white shadow-lg shadow-emerald-500/25">
-                <Leaf size={20} fill="currentColor" />
-              </div>
+           <div className="flex items-center gap-3">
+               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-lg shadow-emerald-500/25 overflow-hidden">
+                 <img src={EcoSenseLogo} alt="EcoSense" className="h-7 w-7" />
+               </div>
               <div>
                 <span className="text-lg font-bold text-slate-900 dark:text-dark-text-heading">EcoSense</span>
                 <p className="text-xs text-slate-500 dark:text-dark-text-muted">Sustainability Platform</p>
