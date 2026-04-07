@@ -4,13 +4,15 @@
 # =============================================================================
 
 # Stage 1: Build the React application
-FROM node:20-alpine AS build
+FROM node:20 AS build
 
 WORKDIR /app
 
 # Install dependencies first (better layer caching)
+# Note: We need ALL dependencies (including devDependencies) for the build
+# because TypeScript, Vite, and other build tools are devDependencies
 COPY package*.json ./
-RUN npm ci --only=production && npm cache clean --force
+RUN npm install
 
 # Copy source code
 COPY . .
