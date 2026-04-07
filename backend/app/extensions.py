@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure, ServerSelectionTimeoutError
 import logging
+import certifi
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +30,7 @@ def init_mongo(app) -> None:
             retryReads=True,
             maxPoolSize=50,
             minPoolSize=10,
+            tlsCAFile=certifi.where(),
         )
         # Trigger connection to verify it works
         _mongo_client.admin.command("ping")
