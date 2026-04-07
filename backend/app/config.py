@@ -13,7 +13,8 @@ class Config:
     MONGO_DB_NAME = os.getenv("MONGO_DB_NAME", "ecosense")
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "change-me-in-production")
     JWT_EXPIRES_IN_HOURS = int(os.getenv("JWT_EXPIRES_IN_HOURS", "24"))
-    AUTH_CODE_EXPIRY_MINUTES = int(os.getenv("AUTH_CODE_EXPIRY_MINUTES", "10"))
+    AUTH_CODE_EXPIRY_MINUTES = int(os.getenv("AUTH_CODE_EXPIRY_MINUTES", "15"))
+    TEAM_INVITE_EXPIRY_HOURS = int(os.getenv("TEAM_INVITE_EXPIRY_HOURS", "24"))
     CORS_ORIGINS = os.getenv(
         "CORS_ORIGINS",
         "http://localhost:5173,http://localhost:3000,http://localhost:8080",

@@ -31,7 +31,7 @@ def _normalize_code(raw_code: object) -> str:
 
 def _send_invite_email(recipient: str, org_name: str, invited_by: str, code: str) -> None:
     app_name = current_app.config["APP_NAME"]
-    expiry_minutes = current_app.config["AUTH_CODE_EXPIRY_MINUTES"]
+    expiry_hours = current_app.config["TEAM_INVITE_EXPIRY_HOURS"]
     # Get the base URL from config or use a default
     base_url = current_app.config.get("FRONTEND_URL", "http://localhost:5173")
     join_url = f"{base_url}/team-invite"
@@ -46,7 +46,7 @@ def _send_invite_email(recipient: str, org_name: str, invited_by: str, code: str
       <div style="display: inline-block; margin: 14px 0; padding: 12px 18px; border-radius: 12px; background: #e7f4e4; font-size: 28px; font-weight: 700; letter-spacing: 0.35em;">
         {code}
       </div>
-      <p>This code expires in {expiry_minutes} minutes.</p>
+      <p>This code expires in {expiry_hours} hours.</p>
       <p style="margin: 20px 0;">
         <a href="{join_url}" 
            style="display: inline-block; padding: 14px 28px; background-color: #10b981; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 16px;">
@@ -181,7 +181,7 @@ def invite_members():
                 "status": "pending",
                 "created_at": now,
                 # FIXED: Using timedelta to prevent overflow errors
-                "expires_at": now + timedelta(minutes=current_app.config["AUTH_CODE_EXPIRY_MINUTES"])
+                "expires_at": now + timedelta(hours=current_app.config["TEAM_INVITE_EXPIRY_HOURS"])
             }
 
             get_database().team_invitations.insert_one(invitation)
@@ -380,7 +380,7 @@ def resend_invite():
         {"$set": {
             "code": new_code,
             "created_at": now,
-            "expires_at": now + timedelta(minutes=current_app.config["AUTH_CODE_EXPIRY_MINUTES"])
+            "expires_at": now + timedelta(hours=current_app.config["TEAM_INVITE_EXPIRY_HOURS"])
         }}
     )
 
