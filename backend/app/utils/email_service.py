@@ -24,7 +24,7 @@ def send_email(recipient: str, subject: str, html_body: str) -> None:
     smtp_port = current_app.config["SMTP_PORT"]
     use_tls = current_app.config["SMTP_USE_TLS"]
 
-    with smtplib.SMTP(smtp_host, smtp_port, timeout=20) as server:
+    with smtplib.SMTP(smtp_host, smtp_port, timeout=60) as server:
         server.ehlo()
         if use_tls:
             server.starttls()
